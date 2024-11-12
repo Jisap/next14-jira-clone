@@ -3,7 +3,7 @@ import { InferRequestType, InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
 
 type ResponseType = InferResponseType<typeof client.api.auth.login["$post"]>;      // Tipos inferidos de la respuesta de la API con hono
-type RequestType = InferRequestType<typeof client.api.auth.login["$post"]>["json"]
+type RequestType = InferRequestType<typeof client.api.auth.login["$post"]>
 
 
 export const useLogin = () => {   // Hook para manejar una mutación de inicio de sesión con tanstack
@@ -12,7 +12,7 @@ export const useLogin = () => {   // Hook para manejar una mutación de inicio d
     Error,
     RequestType
   >({
-    mutationFn: async( json ) => {                                          // la función de la mutación toma como json el RequestType
+    mutationFn: async( { json } ) => {                                      // la función de la mutación toma como json el RequestType
       const response = await client.api.auth.login["$post"]({ json });      // y realizará una llamada a client.api.auth.login["$post"] 
       return response.json();                                               // retorna el json de la respuesta
     }
