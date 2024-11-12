@@ -28,7 +28,11 @@ function getQueryClient() {                                           // Cuando 
   }
 }
 
-export default function Providers({ children }: { children: React.ReactNode }) { // Se crea un componente Providers que provee un cliente de consulta para toda la aplicación
+interface QueryProviderProps {
+  children: React.ReactNode
+}
+
+export const QueryProvider = ({ children }: QueryProviderProps) => { // Se crea un componente Providers que provee un cliente de consulta para toda la aplicación
   const queryClient = getQueryClient()
 
   return (
