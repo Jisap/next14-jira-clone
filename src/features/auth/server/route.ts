@@ -3,7 +3,7 @@ import { zValidator } from "@hono/zod-validator"
 import { loginSchema, registerSchema } from '../schemas';
 import { createAdminClient } from '@/lib/appwrite';
 import { ID } from 'node-appwrite';
-import { setCookie } from 'hono/cookie';
+import { deleteCookie, setCookie } from 'hono/cookie';
 import { AUTH_COOKIE } from '../constants';
 
 
@@ -59,5 +59,10 @@ const app = new Hono()
       return c.json({ success: true });
     }
   )
+  .post("/logout",  async (c) => {
+    deleteCookie(c, AUTH_COOKIE);
+
+    return c.json({ success: true })
+  })
 
 export default app;
