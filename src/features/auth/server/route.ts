@@ -13,8 +13,19 @@ const app = new Hono()
     zValidator("json", loginSchema), 
     async (c) => {
       const { email, password } = c.req.valid("json");
-      console.log({email, password});
-      return c.json({ email, password})
+
+      const { account } = await createAdminClient();                             // Instancia del adminClient -> account
+      const session = await account.createEmailPasswordSession(email, password); // En login solo se recupera la session apartir de la account
+
+      setCookie(c, AUTH_COOKIE, session.secret, {                                // Setea cookie
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+      
+      return c.json({ succes: true })
     }
   )
   .post(
@@ -23,20 +34,20 @@ const app = new Hono()
     async (c) => {
       const { name, email, password } = c.req.valid("json");
       
-      const { account } = await createAdminClient();
-      const user = await account.create(
+      const { account } = await createAdminClient(); // Instancia del adminClient -> account
+      await account.create(                          // Crea usuario en la base de datos desde la account
         ID.unique(),
         email,
         password,
         name,
       );
 
-      const session = await account.createEmailPasswordSession(
+      const session = await account.createEmailPasswordSession( // Crea session desde account
         email,
         password,
       );
 
-      setCookie(c, AUTH_COOKIE, session.secret, {
+      setCookie(c, AUTH_COOKIE, session.secret, {               // Setea cookie
         path: "/",
         httpOnly: true,
         secure: true,
@@ -45,7 +56,7 @@ const app = new Hono()
       });
 
 
-      return c.json({ data: user });
+      return c.json({ success: true });
     }
   )
 
