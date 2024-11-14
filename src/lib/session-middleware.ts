@@ -25,9 +25,12 @@ type AdditionalContext = {
   }
 }
 
+// Este middleware está diseñado para autenticar usuarios a través de una cookie de sesión y proporcionar acceso a las instancias de servicios de Appwrite en el contexto de cada solicitud.
+// y proporcionar acceso a las instancias de servicios de Appwrite en el contexto de cada solicitud. 
+
 export const sessionMiddleware = createMiddleware<AdditionalContext>(
   async(c, next) => {
-    const client = new Client()                                             // se crea una instancia de Client de Appwrite, 
+    const client = new Client()                                             // Se crea una instancia de Client de Appwrite, 
       .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)              // configurada con el endpoint 
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)                // y el ID del proyecto
 

@@ -9,6 +9,14 @@ import { sessionMiddleware } from '@/lib/session-middleware';
 
 
 const app = new Hono()
+  .get(
+    "/current", 
+    sessionMiddleware, 
+    (c) => {
+      const user = c.get("user")
+      return c.json({ data: user })
+    }
+  )
   .post(
     '/login', 
     zValidator("json", loginSchema), 
@@ -65,7 +73,7 @@ const app = new Hono()
     const account = c.get("account")                 // Obtiene el account del contexto
 
     deleteCookie(c, AUTH_COOKIE);                    // Elimina cookie
-    await account.deleteSession("current")           // Finaliza la sessión en Appwrite
+    await account.deleteSession("current")           // Finaliza la sessión en Appwrite desde el account
 
     return c.json({ success: true })
   })
