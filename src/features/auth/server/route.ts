@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/appwrite';
 import { ID } from 'node-appwrite';
 import { deleteCookie, setCookie } from 'hono/cookie';
 import { AUTH_COOKIE } from '../constants';
+import { sessionMiddleware } from '@/lib/session-middleware';
 
 
 const app = new Hono()
@@ -34,8 +35,8 @@ const app = new Hono()
     async (c) => {
       const { name, email, password } = c.req.valid("json");
       
-      const { account } = await createAdminClient(); // Instancia del adminClient -> account
-      await account.create(                          // Crea usuario en la base de datos desde la account
+      const { account } = await createAdminClient();            // Instancia del adminClient -> account
+      await account.create(                                     // Crea usuario en la base de datos desde la account
         ID.unique(),
         email,
         password,
@@ -59,8 +60,12 @@ const app = new Hono()
       return c.json({ success: true });
     }
   )
-  .post("/logout",  async (c) => {
-    deleteCookie(c, AUTH_COOKIE);
+  .post("/logout", sessionMiddleware, async (c) => { // Aplica sessionMiddleware para asegurar que solo los usuarios autenticados puedan acceder a esta ruta.
+
+    const account = c.get("account")                 // Obtiene el account del contexto
+
+    deleteCookie(c, AUTH_COOKIE);                    // Elimina cookie
+    await account.deleteSession("current")           // Finaliza la sessión en Appwrite
 
     return c.json({ success: true })
   })
