@@ -12,12 +12,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useCurrent } from "../api/use-current"
 import { useLogout } from "../api/use-logout"
-import { Loader } from "lucide-react"
+import { Loader, LogOut } from "lucide-react"
 
 
 export const UserButton = () => {
 
   const { data: user, isLoading } = useCurrent();
+  const { mutate: logout } = useLogout();
 
   if(isLoading){
     return (
@@ -66,6 +67,14 @@ export const UserButton = () => {
             </p>
           </div>
         </div>
+        <DottedSeparator className="mb-1" />
+        <DropdownMenuItem 
+          className="h-10 flex items-center justify-center text-amber-700 font-medium cursor-pointer"
+          onClick={() => logout()}
+        >
+          <LogOut className="size-4 mr-2" />
+          Log Out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
