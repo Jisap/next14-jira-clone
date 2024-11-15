@@ -24,7 +24,6 @@ export default function Home() {
 
   return (
     <div className="flex gap-4">
-      Only visible to authorized users
       <UserButton />
     </div>
   );
