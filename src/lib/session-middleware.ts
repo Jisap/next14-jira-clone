@@ -25,7 +25,7 @@ type AdditionalContext = {
   }
 }
 
-// Este middleware está diseñado para autenticar usuarios a través de una cookie de sesión y proporcionar acceso a las instancias de servicios de Appwrite en el contexto de cada solicitud.
+// Este middleware está diseñado para autenticar usuarios a través de una cookie de sesión 
 // y proporcionar acceso a las instancias de servicios de Appwrite en el contexto de cada solicitud. 
 
 export const sessionMiddleware = createMiddleware<AdditionalContext>(
@@ -40,7 +40,7 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
       return c.json({ error:  "Unauthorized" }, 401)                        // Si no existe una sesión, se devuelve un error 401
     }
 
-    client.setSession(session)                                              // Si existe una sesión, se establece la sesión en el client
+    client.setSession(session)                                              // Si existe una sesión, se establece en el client
 
     const account = new Account(client)                                     // Se crean instancias de los servicios de Appwrite 
     const databases = new Databases(client)
