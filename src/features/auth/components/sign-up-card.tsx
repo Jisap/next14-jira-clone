@@ -1,3 +1,5 @@
+"use client"
+
 import DottedSeparator from "@/components/dotted-separator"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { registerSchema } from "../schemas"
 import { useRegister } from "../api/use-register"
+
 
 
 
@@ -123,7 +126,7 @@ export const SignUpCard = () => {
               size="lg"
               className="w-full"
             >
-              Login
+              Register
             </Button>
           </form>
         </Form>

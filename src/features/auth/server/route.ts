@@ -70,7 +70,7 @@ const app = new Hono()
   )
   .post("/logout", sessionMiddleware, async (c) => { // Aplica sessionMiddleware para asegurar que solo los usuarios autenticados puedan acceder a esta ruta.
 
-    const account = c.get("account")                 // Obtiene el account del contexto
+    const account = await c.get("account")                 // Obtiene el account del contexto (establecido en el middleware)
 
     deleteCookie(c, AUTH_COOKIE);                    // Elimina cookie
     await account.deleteSession("current")           // Finaliza la sessión en Appwrite desde el account

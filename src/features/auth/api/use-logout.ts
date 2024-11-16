@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
+import { useRouter } from "next/navigation";
 
 type ResponseType = InferResponseType<typeof client.api.auth.logout["$post"]>;      // Tipos inferidos de la respuesta de la API con hono
 
@@ -8,6 +9,8 @@ type ResponseType = InferResponseType<typeof client.api.auth.logout["$post"]>;  
 
 export const useLogout = () => {   // Hook para manejar una mutación de logout de sesión con tanstack
   
+  const router = useRouter();
+
   const queryClient = useQueryClient();
   
   const mutation = useMutation<
@@ -19,6 +22,8 @@ export const useLogout = () => {   // Hook para manejar una mutación de logout 
       return response.json();                                               // retorna el json de la respuesta
     },
     onSuccess: () => {
+      //window.location.reload()
+      router.refresh()                                                      // Refresca la página actual
       queryClient.invalidateQueries({ queryKey: ["current"]});              // Invalida las consultas de usuario actual en la aplicación cuando se realiza una mutación de logout
     }                                                                       // Esto provoca que el useCurrent de la pagina de inicio se actualice y muestre el estado de autenticación actualizado
   })

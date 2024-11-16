@@ -37,7 +37,7 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
     const session = getCookie(c, AUTH_COOKIE)                               // Se busca la cookie para verificar si el usuario tiene una sesión activa. 
 
     if(!session){
-      return c.json({ error:  "Unauthorized" }, 401)                        // Si no existe una sesión, se devuelve un error 401
+      return c.json({ error: "Unauthorized" }, 401)                     // Si no existe una sesión, se devuelve un error 401
     }
 
     client.setSession(session)                                              // Si existe una sesión, se establece en el client
@@ -46,7 +46,7 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
     const databases = new Databases(client)
     const storage = new Storage(client)
     
-    const user = await account.get()                                        // Se obtiene el usuario actual llamando a account.get(), lo cual proporciona la información del usuario que está realizando la solicitud.
+    const user = await account.get()                                        // Llama a la API de Appwrite para obtener información del usuario actual.
 
     c.set("account", account)                                               // Se establecen las instancias de los servicios de Appwrite en el contexto del servidor
     c.set("databases", databases)                                           // permitiendo que otros middlewares o manejadores de rutas accedan a ellas

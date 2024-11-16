@@ -1,12 +1,16 @@
-import { useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
+import { useRouter } from "next/navigation";
 
 type ResponseType = InferResponseType<typeof client.api.auth.register["$post"]>;  // Tipos inferidos de la respuesta de la API con hono
 type RequestType = InferRequestType<typeof client.api.auth.register["$post"]>
 
 
 export const useRegister = () => {   // Hook para manejar una mutación de inicio de sesión con tanstack
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
   const mutation = useMutation<
     ResponseType,
     Error,
@@ -15,6 +19,11 @@ export const useRegister = () => {   // Hook para manejar una mutación de inici
     mutationFn: async ({ json }) => {                                       // la función de la mutación toma como json el RequestType
       const response = await client.api.auth.register["$post"]({ json });   // y realizará una llamada a client.api.auth.login["$post"] 
       return response.json();                                               // retorna el json de la respuesta
+    },
+    onSuccess: () => {
+      //window.location.reload()
+      router.refresh()
+      queryClient.invalidateQueries({ queryKey: ["current"] });
     }
   })
 

@@ -1,3 +1,5 @@
+"use client"
+
 import DottedSeparator from "@/components/dotted-separator"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,6 +26,8 @@ import {
 import Link from "next/link"
 import { loginSchema } from "../schemas"
 import { useLogin } from "../api/use-login"
+
+
 
 
 
