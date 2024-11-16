@@ -23,7 +23,7 @@ export const useLogout = () => {   // Hook para manejar una mutación de logout 
     },
     onSuccess: () => {
       //window.location.reload()
-      router.refresh()                                                      // Refresca la página actual
+      router.refresh()                                                      // Refresca la página actual -> actualiza el estado de autenticación en la aplicación -> sincroniza otros componentes de la aplicación que dependan de user
       queryClient.invalidateQueries({ queryKey: ["current"]});              // Invalida las consultas de usuario actual en la aplicación cuando se realiza una mutación de logout
     }                                                                       // Esto provoca que el useCurrent de la pagina de inicio se actualice y muestre el estado de autenticación actualizado
   })
