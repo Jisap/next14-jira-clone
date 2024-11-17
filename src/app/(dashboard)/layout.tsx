@@ -1,4 +1,4 @@
-import { Sidebar } from "@/features/auth/components/Sidebar";
+import { Sidebar } from "@/components/Sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

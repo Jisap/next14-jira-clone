@@ -1,5 +1,7 @@
+import DottedSeparator from "@/components/dotted-separator"
 import Image from "next/image"
 import Link from "next/link"
+import { Navigation } from "./Navigation"
 
 
 export const Sidebar = () => {
@@ -13,6 +15,9 @@ export const Sidebar = () => {
           height={48}
         />
       </Link>
+      <DottedSeparator className="my-4"/>
+      <Navigation />
+
     </aside>
   )
 }
