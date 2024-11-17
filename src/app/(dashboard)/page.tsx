@@ -15,7 +15,7 @@ const Home = async() => {
 
   return (
     <div className="flex gap-4">
-      <UserButton />
+      This is a home page
     </div>
   );
 }
