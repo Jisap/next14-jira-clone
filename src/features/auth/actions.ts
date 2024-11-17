@@ -17,7 +17,6 @@ export const getCurrent = async() => {
       //.setKey(process.env.NEXT_APPWRITE_KEY!);
 
     const session = cookies().get(AUTH_COOKIE) // session desde las cookies según next
-    console.log({"session cookie": session});
     if(!session) {
       console.log("No session cookie found");
       return null;                                  // Sino existe session -> null
@@ -26,7 +25,6 @@ export const getCurrent = async() => {
     client.setSession(session.value);
 
     const account = new Account(client);            // Se crean una account basada en el client de appWrite 
-    console.log({"account": account.get()});
     const user = await account.get();               // se retorna el user logueado desde la cuenta
     return user;
   
