@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
+import { toast } from "sonner";
 
 
 type ResponseType = InferResponseType<typeof client.api.workspaces["$post"]>;  // Tipos inferidos de la respuesta de la API con hono
@@ -20,7 +21,12 @@ export const useCreateWorkspace = () => {                 // Hook para manejar u
       return response.json()                                                // retorna el json de la respuesta    
     },
     onSuccess: () => {
+      toast.success("Workspace created successfully");
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
+    },
+    onError: (error) => {
+      console.log({error});
+      toast.error("Failer to create workspace");
     }
   })
 
