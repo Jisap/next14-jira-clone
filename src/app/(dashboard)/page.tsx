@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { getCurrent } from '@/features/auth/actions';
-import { UserButton } from '../../features/auth/components/user-button';
+import { CreateWorkspaceForm } from '@/features/workspaces/components/create-workspace-form';
 
 
 
@@ -15,7 +15,7 @@ const Home = async() => {
 
   return (
     <div className="flex gap-4">
-      This is a home page
+      <CreateWorkspaceForm />
     </div>
   );
 }
