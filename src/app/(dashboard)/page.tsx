@@ -14,7 +14,7 @@ const Home = async() => {
   
 
   return (
-    <div className="flex gap-4">
+    <div className="bg-neutral-500 p-4 h-full">
       <CreateWorkspaceForm />
     </div>
   );
