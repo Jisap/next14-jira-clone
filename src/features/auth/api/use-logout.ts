@@ -20,6 +20,9 @@ export const useLogout = () => {   // Hook para manejar una mutación de logout 
   >({
     mutationFn: async() => {                                                // La función de la mutación no toma ningún argumento, sino que devuelve una promesa que se resuelve cuando se reciba la respuesta de la API
       const response = await client.api.auth.logout["$post"]();             // y realizará una llamada a client.api.auth.logout["$post"] 
+      
+      if (!response.ok) throw new Error("Failed to logout");
+      
       return response.json();                                               // retorna el json de la respuesta
     },
     onSuccess: () => {

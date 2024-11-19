@@ -20,7 +20,10 @@ export const useLogin = () => {   // Hook para manejar una mutación de inicio d
   >({
     mutationFn: async( { json } ) => {                                      // la función de la mutación toma como json el RequestType
       const response = await client.api.auth.login["$post"]({ json });      // y realizará una llamada a client.api.auth.login["$post"] 
-      return response.json()                                               // retorna el json de la respuesta    
+      
+      if (!response.ok) throw new Error("Failed to login");
+      
+      return response.json()                                                // retorna el json de la respuesta    
     },
     onSuccess: () => {
       //window.location.reload()
