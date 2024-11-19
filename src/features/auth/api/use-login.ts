@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 
 type ResponseType = InferResponseType<typeof client.api.auth.login["$post"]>;      // Tipos inferidos de la respuesta de la API con hono
 type RequestType = InferRequestType<typeof client.api.auth.login["$post"]>
@@ -22,8 +24,13 @@ export const useLogin = () => {   // Hook para manejar una mutación de inicio d
     },
     onSuccess: () => {
       //window.location.reload()
+      toast.success("Logged in successfully");
       router.refresh()
       queryClient.invalidateQueries({ queryKey: ["current"] });
+    },
+    onError: (error) => {
+      console.log({error});
+      toast.error("Failed to login");
     }
   })
 
