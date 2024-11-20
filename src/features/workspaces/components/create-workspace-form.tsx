@@ -114,6 +114,16 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                           disabled={isPending}
                           onChange={handleImageChange}
                         />
+                        <Button
+                          type="button"
+                          disabled={isPending}
+                          variant="tertiary"
+                          size="xs"
+                          className="w-fit mt-2"
+                          onClick={() => inputRef.current?.click()} // al hacer click en el boton se establece el valor del input referenciado
+                        >
+                          Upload Image
+                        </Button>
                       </div>
                     </div>
                   </div>
