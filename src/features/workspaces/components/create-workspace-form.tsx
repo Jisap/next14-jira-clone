@@ -35,7 +35,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   });
 
   const onSubmmit = (values: z.infer<typeof createWorkspaceSchema>) => {
-    mutate({ json: values });
+    mutate({ form: values });
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

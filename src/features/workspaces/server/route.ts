@@ -10,13 +10,13 @@ import { ID } from "node-appwrite";
 const app = new Hono()
   .post(                                                           // Endpoint para crear un nuevo workspace
     "/",
-    zValidator("json", createWorkspaceSchema),                     // Se carga el eschema de validación de workspace
+    zValidator("form", createWorkspaceSchema),                     // Se carga el eschema de validación de workspace
     sessionMiddleware,                                             // Solo usuarios autenticados pueden acceder a esta ruta, ademas establece el contexto de la sesión
     async (c) => {
       const databases = c.get("databases")                         // Obtiene el databases del contexto (establecido en el middleware)
       const user = c.get("user")                                   // Obtiene el user del contexto (establecido en el middleware)
 
-      const { name, image } = c.req.valid("json")                  // Se valida el request (nombre del workspace y la imagen) segun su esquema
+      const { name, image } = c.req.valid("form")                  // Se valida el request (nombre del workspace y la imagen) segun su esquema
       
       let uploadedImageUrl: string | undefined;                    // Definimos una variable que almacenará la URL de la imagen subida
       const storage = c.get("storage")                             // Se obtiene el storage del contexto (establecido en el middleware)

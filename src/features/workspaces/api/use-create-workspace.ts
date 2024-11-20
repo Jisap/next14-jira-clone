@@ -16,8 +16,8 @@ export const useCreateWorkspace = () => {                 // Hook para manejar u
     Error,
     RequestType
   >({
-    mutationFn: async( { json } ) => {                                      // la función de la mutación toma como json el RequestType
-      const response = await client.api.workspaces["$post"]({ json });      // y realizará una llamada a client.api.workspaces["$post"] 
+    mutationFn: async( { form } ) => {                                      // la función de la mutación toma el form como el RequestType
+      const response = await client.api.workspaces["$post"]({ form });      // y realizará una llamada a client.api.workspaces["$post"] 
       
       if (!response.ok) throw new Error("Failed to create workspace");
 
