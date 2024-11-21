@@ -27,19 +27,19 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   
-  const form = useForm<z.infer<typeof createWorkspaceSchema>>({
+  const form = useForm<z.infer<typeof createWorkspaceSchema>>({                 // Definición del form con react-hook-form
     resolver: zodResolver(createWorkspaceSchema),
     defaultValues: {
       name: "",
     }
   });
 
-  const onSubmmit = (values: z.infer<typeof createWorkspaceSchema>) => {
-    const finalValues = {
+  const onSubmmit = (values: z.infer<typeof createWorkspaceSchema>) => {        // El submit recibe los values del form y se valida con el esquema
+    const finalValues = {                                                       // Se crea un objeto con los valores del form y la imagen subida
       ...values,
       image: values.image instanceof File ? values.image : "",
     }
-    mutate({ form: finalValues }, {
+    mutate({ form: finalValues }, {                                             // Se envia el objeto al mutation
       onSuccess: () => {
         form.reset();
         // TODO: Redirect to new workspace

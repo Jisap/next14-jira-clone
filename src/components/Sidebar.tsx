@@ -2,6 +2,7 @@ import DottedSeparator from "@/components/dotted-separator"
 import Image from "next/image"
 import Link from "next/link"
 import { Navigation } from "./Navigation"
+import { WorkspaceSwitcher } from "./WorkspaceSwitcher"
 
 
 export const Sidebar = () => {
@@ -16,6 +17,8 @@ export const Sidebar = () => {
         />
       </Link>
       <DottedSeparator className="my-4"/>
+      <WorkspaceSwitcher />
+      <DottedSeparator className="my-4" />
       <Navigation />
 
     </aside>

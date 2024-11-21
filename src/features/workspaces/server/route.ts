@@ -4,10 +4,20 @@ import { sessionMiddleware } from "@/lib/session-middleware";
 import { createWorkspaceSchema } from "../schemas";
 import { DATABASE_ID, IMAGES_BUCKET_ID, WORKSPACE_ID } from "@/config";
 import { ID } from "node-appwrite";
+import workspaces from '@/features/workspaces/server/route';
 
 
 
 const app = new Hono()
+  .get("/", sessionMiddleware, async (c) => {                     // Endpoint para obtener todos los workspaces
+    const databases = c.get("databases")                         
+    const workspaces = await databases.listDocuments(
+      DATABASE_ID,
+      WORKSPACE_ID,
+    );
+    
+    return c.json({ data: workspaces })
+  })
   .post(                                                           // Endpoint para crear un nuevo workspace
     "/",
     zValidator("form", createWorkspaceSchema),                     // Se carga el eschema de validación de workspace
@@ -39,9 +49,9 @@ const app = new Hono()
         WORKSPACE_ID,
         ID.unique(),
         {
-          name,
-          userId: user.$id,
-          imageUrl: uploadedImageUrl,
+          name,                                                   // y se almacena el nombre del workspace
+          userId: user.$id,                                       // y el ID del user que lo creó
+          imageUrl: uploadedImageUrl,                             // y la URL de la imagen subida (avatar)
         }
       )
 
