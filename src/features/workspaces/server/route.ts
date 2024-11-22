@@ -2,9 +2,10 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { sessionMiddleware } from "@/lib/session-middleware";
 import { createWorkspaceSchema } from "../schemas";
-import { DATABASE_ID, IMAGES_BUCKET_ID, WORKSPACE_ID } from "@/config";
+import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACE_ID } from "@/config";
 import { ID } from "node-appwrite";
 import workspaces from '@/features/workspaces/server/route';
+import { MemberRole } from "@/features/members/type";
 
 
 
@@ -52,6 +53,17 @@ const app = new Hono()
           name,                                                   // y se almacena el nombre del workspace
           userId: user.$id,                                       // y el ID del user que lo creó
           imageUrl: uploadedImageUrl,                             // y la URL de la imagen subida (avatar)
+        }
+      );
+
+      await databases.createDocument(                             // Cada vez que se crea un workspace se crea un member
+        DATABASE_ID,
+        MEMBERS_ID,
+        ID.unique(),
+        {
+          userId: user.$id,                                       // y estará asociado al usuario que creó el workspace,
+          workspaceId: workspace.$id,                             // al workspace que creó,
+          role: MemberRole.ADMIN,                                          // y será un admin
         }
       )
 
