@@ -30,6 +30,7 @@ export const useLogout = () => {   // Hook para manejar una mutación de logout 
       toast.success("Logged out successfully");
       router.refresh()                                                      // Refresca la página actual -> actualiza el estado de autenticación en la aplicación -> sincroniza otros componentes de la aplicación que dependan de user
       queryClient.invalidateQueries({ queryKey: ["current"]});              // Invalida las consultas de usuario actual en la aplicación cuando se realiza una mutación de logout
+      queryClient.invalidateQueries({ queryKey: ["workspaces"]});            // Invalida las consultas de workspaces en la aplicación cuando se realiza una mutación de logout
     },                                                                       // Esto provoca que el useCurrent de la pagina de inicio se actualice y muestre el estado de autenticación actualizado
     onError: (error) => {
       console.log({error});
