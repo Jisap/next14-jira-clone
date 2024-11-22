@@ -6,6 +6,7 @@ import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACE_ID } from "@/confi
 import { ID, Query } from "node-appwrite";
 import workspaces from '@/features/workspaces/server/route';
 import { MemberRole } from "@/features/members/type";
+import { generateInviteCode } from "@/lib/utils";
 
 
 
@@ -72,6 +73,7 @@ const app = new Hono()
           name,                                                   // y se almacena el nombre del workspace
           userId: user.$id,                                       // y el ID del user que lo creó
           imageUrl: uploadedImageUrl,                             // y la URL de la imagen subida (avatar)
+          inviteCode: generateInviteCode(6),                      // y un código de invitación aleatorio
         }
       );
 
