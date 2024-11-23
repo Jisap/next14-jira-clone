@@ -5,7 +5,7 @@ import { Account, Client } from "node-appwrite"
 import { AUTH_COOKIE } from "./constants"
 
 
-export const getCurrent = async() => {
+export const getCurrent = async() => { // Función para obtener el user logueado
 
   try { 
     
@@ -14,7 +14,7 @@ export const getCurrent = async() => {
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)                // y el ID del proyecto
       //.setKey(process.env.NEXT_APPWRITE_KEY!);
 
-    const session = cookies().get(AUTH_COOKIE) // session desde las cookies según next
+    const session = cookies().get(AUTH_COOKIE)      // session desde las cookies según next
     if(!session) {
       console.log("No session cookie found");
       return null;                                  // Sino existe session -> null
