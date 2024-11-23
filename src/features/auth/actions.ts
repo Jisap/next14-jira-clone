@@ -5,8 +5,6 @@ import { Account, Client } from "node-appwrite"
 import { AUTH_COOKIE } from "./constants"
 
 
-
-
 export const getCurrent = async() => {
 
   try { 
@@ -22,7 +20,7 @@ export const getCurrent = async() => {
       return null;                                  // Sino existe session -> null
     }
 
-    client.setSession(session.value);
+    client.setSession(session.value);               // se establece la session en el client
 
     const account = new Account(client);            // Se crean una account basada en el client de appWrite 
     const user = await account.get();               // se retorna el user logueado desde la cuenta
