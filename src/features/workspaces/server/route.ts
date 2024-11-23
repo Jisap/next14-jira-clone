@@ -26,14 +26,14 @@ const app = new Hono()
       return c.json({ data: {documents:[], total: 0 }})
     }
 
-    const workspaceIds = members.documents.map((member) => member.workspaceId)  // Se obtienen los IDs de los workspaces que pertenecen a los members
+    const workspaceIds = members.documents.map((member) => member.workspaceId)  // Se obtienen los IDs de los workspaces asociados al usuario logueado
     
-    const workspaces = await databases.listDocuments(
+    const workspaces = await databases.listDocuments(             // Con esos IDs se obtienen los workspaces
       DATABASE_ID,
       WORKSPACE_ID,
       [
-        Query.orderDesc("$createdAt"),                            // Se ordenan los workspaces por fecha de creación
-        Query.contains("$id", workspaceIds),                       
+        Query.orderDesc("$createdAt"),                            // ordenados por fecha de creación
+        Query.contains("$id", workspaceIds),                        
       ]
     );
     
