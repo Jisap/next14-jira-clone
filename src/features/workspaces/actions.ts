@@ -18,7 +18,7 @@ export const getWorkspaces = async() => { // Función para obtener los workspace
     const session = cookies().get(AUTH_COOKIE)                              // session desde las cookies según next
     if(!session) {
       console.log("No session cookie found");
-      return null;                                                          // Sino existe session -> null
+      return { documents: [], total: 0 }                                    // Sino existe session -> objeto vacio
     }
 
     client.setSession(session.value);                                       // se establece la session en el client
@@ -52,7 +52,7 @@ export const getWorkspaces = async() => { // Función para obtener los workspace
   
 } catch(error){
     console.error("Error fetching current user:", error);
-    return null
+    return { documents: [], total: 0 }
 }
 
 }
