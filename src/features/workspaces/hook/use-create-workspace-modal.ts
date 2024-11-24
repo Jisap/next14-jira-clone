@@ -2,7 +2,7 @@
 
 import { useQueryState, parseAsBoolean } from "nuqs";
 
-export const useCreateWorkspaceModal = () => {
+export const useCreateWorkspaceModal = () => { // Estado que modifica el estado de isOpen y maneja el parámetro de la URL.
   const [ isOpen, setIsOpen ] = useQueryState( 
     "createWorkspaceModalOpen",                    // El nombre del parámetro en la URL
     parseAsBoolean                                 // Define cómo interpretar el valor del parámetro y qué hacer con los valores predeterminados.
@@ -16,8 +16,8 @@ export const useCreateWorkspaceModal = () => {
 
   return {
     isOpen, // El hook retorna el valor de isOpen, lo que permite que otros componentes puedan verificar si el modal está abierto o cerrado.
+    setIsOpen,
     open,
     close,
-    setIsOpen
   }
 }

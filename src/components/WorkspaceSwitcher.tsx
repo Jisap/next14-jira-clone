@@ -13,6 +13,7 @@ import {
 import { WorkspaceAvatar } from "@/features/workspaces/components/workspace-avatar";
 import { useRouter } from "next/navigation";
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id";
+import { useCreateWorkspaceModal } from "@/features/workspaces/hook/use-create-workspace-modal";
 
 
 export const WorkspaceSwitcher = () => {
@@ -20,6 +21,8 @@ export const WorkspaceSwitcher = () => {
   const workspaceId = useWorkspaceId(); // id desde la url
   const router = useRouter();
   const { data:workspaces } = useGetWorkspaces();
+
+  const { open } = useCreateWorkspaceModal(); // modifica el estado de isOpen y maneja el parámetro de la URL.
 
   const onSelect = (id: string) => {
     router.push(`/workspaces/${id}`)
@@ -31,7 +34,10 @@ export const WorkspaceSwitcher = () => {
         <p className="text-xs uppercase text-neutral-500">
           Workspaces
         </p>
-        <RiAddCircleFill className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition" />
+        <RiAddCircleFill 
+          className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition" 
+          onClick={open}
+        />
       </div>
 
       <Select 
