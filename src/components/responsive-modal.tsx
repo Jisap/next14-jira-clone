@@ -8,13 +8,13 @@ import  {
 
 interface ResponsiveModalProps {
   children: React.ReactNode;
-  isOpen: boolean;
+  open: boolean;
   onOpenChange: ( open: boolean ) => void;
 }
 
 export const ResponsiveModal = ( {
   children,
-  isOpen,
+  open,
   onOpenChange,
 }: ResponsiveModalProps ) => {
 
@@ -23,10 +23,10 @@ export const ResponsiveModal = ( {
   if(isDesktop){
     return (
       <Dialog 
-        open={isOpen} 
+        open={open} 
         onOpenChange={onOpenChange}
       >
-        <DialogContent className='overflow-y-auto hide-scrollbar max-h-[85vh]'>
+        <DialogContent className='w-full sm:max-w-lg p-0 border-none overflow-y-auto hide-scrollbar max-h-[85vh]'>
           {children}
         </DialogContent>
       </Dialog>
@@ -35,11 +35,11 @@ export const ResponsiveModal = ( {
 
   return (
     <Drawer
-      open={isOpen}
+      open={open}
       onOpenChange={onOpenChange}
     >
       <DrawerContent>
-        <div className='w-full sm:max-w-lg p-0 border-none overflow-y-auto hide-scrollbar max-h-[85vh]'>
+        <div className='overflow-y-auto hide-scrollbar max-h-[85vh]'>
           {children}
         </div>
       </DrawerContent>
