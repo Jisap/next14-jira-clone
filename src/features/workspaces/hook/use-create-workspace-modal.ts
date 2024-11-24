@@ -18,5 +18,6 @@ export const useCreateWorkspaceModal = () => {
     isOpen, // El hook retorna el valor de isOpen, lo que permite que otros componentes puedan verificar si el modal está abierto o cerrado.
     open,
     close,
+    setIsOpen
   }
 }
