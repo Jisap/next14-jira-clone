@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 
 import { ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 
 interface CreateWorkspaceFormProps {
@@ -23,6 +24,7 @@ interface CreateWorkspaceFormProps {
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => { // Formulario para crear un nuevo workspace con react-hook-form
   
+  const router = useRouter();
   const { mutate, isPending } = useCreateWorkspace();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,9 +42,9 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       image: values.image instanceof File ? values.image : "",
     }
     mutate({ form: finalValues }, {                                             // Se envia el objeto al mutation
-      onSuccess: () => {
+      onSuccess: ({data}) => {                                                  // Si se obtuvo la data de la mutation
         form.reset();
-        // TODO: Redirect to new workspace
+        router.push(`/workspaces/${data.$id}`)                                  // Se redirige al nuevo workspace
       }
     });
   }
