@@ -16,10 +16,11 @@ import Image from "next/image";
 
 import { ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 
 interface CreateWorkspaceFormProps {
-  onCancel?: () => void;
+  onCancel?: () => void; // Cierra el modal y establece isOpen a false
 }
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => { // Formulario para crear un nuevo workspace con react-hook-form
@@ -57,7 +58,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   }
 
   return (
-    <Card className="w-full h-full border-none shadow-none">
+    <Card className="w-full h-full border-none shadow-slate-200">
       <CardHeader className="flex p-7">
         <CardTitle className="text-xl font-bold">
           Create a new workspace
@@ -149,6 +150,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 variant="secondary"
                 onClick={onCancel}
                 disabled={isPending}
+                className={cn(!onCancel && "invisible")} // Si no se pasa el onCancel, se oculta el boton
               >
                 Cancel
               </Button>
