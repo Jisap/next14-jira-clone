@@ -26,11 +26,11 @@ export const useUpdateWorkspace = () => {                 // Hook para manejar u
     onSuccess: ({data}) => {
       toast.success("Workspace updated successfully");
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
-      queryClient.invalidateQueries({ queryKey: ["workspaces", data.$id] });
+      queryClient.invalidateQueries({ queryKey: ["workspace", data.$id] });
     },
     onError: (error) => {
       console.log({error});
-      toast.error("Failer to create workspace");
+      toast.error("Failed to update workspace");
     }
   })
 

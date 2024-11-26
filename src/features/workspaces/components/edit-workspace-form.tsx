@@ -13,7 +13,7 @@ import { useRef } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 
-import { ImageIcon } from "lucide-react";
+import { ArrowLeftIcon, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
@@ -36,7 +36,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
     resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
       ...initialValues,
-      image: initialValues.imageUrl || undefined,
+      image: initialValues.imageUrl ?? "",
     }
   });
 
@@ -48,7 +48,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
     mutate({ 
       form: finalValues,
       param: { workspaceId: initialValues.$id },
-    }, {                                             // Se envia el objeto al mutation
+    }, {                                                                        // Se envia el objeto al mutation
       onSuccess: ({data}) => {                                                  // Si se obtuvo la data de la mutation
         form.reset();
         router.push(`/workspaces/${data.$id}`)                                  // Se redirige al nuevo workspace
@@ -60,12 +60,22 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("image", file);
+    } else {
+      form.setValue("image", undefined); 
     }
   }
 
   return (
     <Card className="w-full h-full border-none shadow-slate-200">
-      <CardHeader className="flex p-7">
+      <CardHeader className="flex flex-row items-center gap-x-4 p-7 space-y-0">
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={onCancel}
+        >
+          Back
+          <ArrowLeftIcon  className="size-4 mr-2" />
+        </Button>
         <CardTitle className="text-xl font-bold">
           { initialValues.name }
         </CardTitle>
@@ -108,7 +118,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
                             src={
                               field.value instanceof File
                                 ? URL.createObjectURL(field.value)
-                                : field.value
+                                : field.value ?? "/Page-not-found.png"     
                             }
                           />
                         </div>

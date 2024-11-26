@@ -74,11 +74,12 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => { // F
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)                // y el ID del proyecto
     //.setKey(process.env.NEXT_APPWRITE_KEY!);
 
-    const session = cookies().get(AUTH_COOKIE)                              // session desde las cookies según next
-    if (!session) {
-      console.log("No session cookie found");
-      return null                                                           // Sino existe session -> null
-    }
+    const session = await cookies().get(AUTH_COOKIE)                        // session desde las cookies según next
+    if (!session) return null 
+    //   {
+    //   console.log("No session cookie found");
+    //   return null                                                           // Sino existe session -> null
+    // }
 
     client.setSession(session.value);                                       // se establece la session en el client
 
@@ -96,7 +97,7 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => { // F
       return null
     }
 
-    const workspace = await databases.getDocument<Workspace>(                          // Se obtiene el workspace basado en el Id del param
+    const workspace = await databases.getDocument<Workspace>(               // Se obtiene el workspace basado en el Id del param
       DATABASE_ID,
       WORKSPACE_ID,
       workspaceId
