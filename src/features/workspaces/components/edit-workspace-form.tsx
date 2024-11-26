@@ -43,7 +43,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
   const onSubmmit = (values: z.infer<typeof updateWorkspaceSchema>) => {        // El submit recibe los values del form y se valida con el esquema
     const finalValues = {                                                       // Se crea un objeto con los valores del form y la imagen subida
       ...values,
-      image: values.image instanceof File ? values.image : undefined
+      image: values.image instanceof File ? values.image : ""
     }
     mutate({ 
       form: finalValues,
@@ -71,7 +71,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
         <Button
           size="sm"
           variant="secondary"
-          onClick={onCancel}
+          onClick={onCancel ? onCancel : () => router.push(`/workspaces/${initialValues.$id}`)}
         >
           Back
           <ArrowLeftIcon  className="size-4 mr-2" />
@@ -175,7 +175,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
                 size="lg"
                 disabled={isPending}
               >
-                Create Workspace
+                Save Changes
               </Button>
             </div>
           </form>
