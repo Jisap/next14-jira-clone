@@ -4,6 +4,9 @@ import { cookies } from "next/headers"
 import { Account, Client, Databases, Query } from "node-appwrite"
 import { AUTH_COOKIE } from "@/features/auth/constants"
 import { DATABASE_ID, MEMBERS_ID, WORKSPACE_ID } from "@/config"
+import workspaces from '@/features/workspaces/server/route';
+import { getMember } from "../members/utils"
+import { Workspace } from "./types"
 
 
 export const getWorkspaces = async() => { // Función para obtener los workspaces del usuario logueado
@@ -54,6 +57,57 @@ export const getWorkspaces = async() => { // Función para obtener los workspace
     console.error("Error fetching current user:", error);
     return { documents: [], total: 0 }
 }
+
+}
+
+
+interface GetWorkspaceProps {
+  workspaceId: string;
+}
+
+export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => { // Función para obtener un workspace 
+
+  try {
+
+    const client = new Client()                                             // Se crea una instancia de Client de Appwrite, 
+      .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)              // configurada con el endpoint 
+      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)                // y el ID del proyecto
+    //.setKey(process.env.NEXT_APPWRITE_KEY!);
+
+    const session = cookies().get(AUTH_COOKIE)                              // session desde las cookies según next
+    if (!session) {
+      console.log("No session cookie found");
+      return null                                                           // Sino existe session -> null
+    }
+
+    client.setSession(session.value);                                       // se establece la session en el client
+
+    const account = new Account(client);                                    // Se crean una account basada en el client de appWrite que contiene la session
+    const user = await account.get();                                       // se obtiene el user logueado desde la cuenta
+    const databases = new Databases(client);                                // Se crean una instancia de databases basada en el client de appWrite 
+    
+    const member = await getMember({                                        // Registro del miembro del workspace
+      databases,
+      userId: user.$id,
+      workspaceId,
+    })
+
+    if (!member) {                                                          // Se verifica si el usuario es miembro del workspace
+      return null
+    }
+
+    const workspace = await databases.getDocument<Workspace>(                          // Se obtiene el workspace basado en el Id del param
+      DATABASE_ID,
+      WORKSPACE_ID,
+      workspaceId
+    );
+
+    return workspace
+
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    return null
+  }
 
 }
 

@@ -1,12 +1,13 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { sessionMiddleware } from "@/lib/session-middleware";
-import { createWorkspaceSchema } from "../schemas";
+import { createWorkspaceSchema, updateWorkspaceSchema } from "../schemas";
 import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACE_ID } from "@/config";
 import { ID, Query } from "node-appwrite";
 import workspaces from '@/features/workspaces/server/route';
 import { MemberRole } from "@/features/members/type";
 import { generateInviteCode } from "@/lib/utils";
+import { getMember } from "@/features/members/utils";
 
 
 
@@ -87,6 +88,54 @@ const app = new Hono()
           role: MemberRole.ADMIN,                                          // y será un admin
         }
       )
+
+      return c.json({ data: workspace })
+    }
+  )
+  .patch(
+    "/:workspaceId",                              // param
+    sessionMiddleware,                            // usuario autenticado
+    zValidator("form", updateWorkspaceSchema),    // info del formulario validado segun su esquema
+    async (c) => {
+      const databases = c.get("databases")
+      const storage = c.get("storage")
+      const user = c.get("user")
+
+      const { workspaceId } = c.req.param()
+      const  { name, image } = c.req.valid("form")
+
+      const member = await getMember({ databases, workspaceId, userId: user.$id }) // Obtenemos el miembro del workspace
+    
+      if(!member || member.role !== MemberRole.ADMIN){
+        return c.json({ error: "You are not authorized to perform this action" }, 401) // Validamos que el miembro del workspace sea admin para poder actualizar el workspace
+      }
+
+      let uploadedImageUrl: string | undefined;                    // Definimos una variable que almacenará la URL de la imagen subida
+
+      if (image instanceof File) {                                 // Si la imagen es un objeto File
+        const file = await storage.createFile(                     // Se crea el archivo en la base de datos de Appwrite
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image,
+        );
+        const arrayBuffer = await storage.getFilePreview(          // Se obtiene la vista previa del archivo
+          IMAGES_BUCKET_ID,
+          file.$id,
+        );
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`; // Se crea la URL de la imagen subida
+      } else {
+        uploadedImageUrl = image
+      }
+      
+      const workspace = await databases.updateDocument(             // Se actualiza el workspace en la base de datos
+        DATABASE_ID,
+        WORKSPACE_ID,
+        workspaceId,
+        {
+          name,                                                   // y se almacena el nombre del workspace
+          imageUrl: uploadedImageUrl,                             // y la URL de la imagen subida (avatar)
+        }
+      );
 
       return c.json({ data: workspace })
     }
