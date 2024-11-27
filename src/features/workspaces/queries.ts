@@ -17,7 +17,6 @@ export const getWorkspaces = async() => { // Función para obtener los workspace
     // const client = new Client()                                             // Se crea una instancia de Client de Appwrite, 
     //   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)              // configurada con el endpoint 
     //   .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)                // y el ID del proyecto
-    //   //.setKey(process.env.NEXT_APPWRITE_KEY!);
 
     // const session = cookies().get(AUTH_COOKIE)                              // session desde las cookies según next
     // if(!session) {
