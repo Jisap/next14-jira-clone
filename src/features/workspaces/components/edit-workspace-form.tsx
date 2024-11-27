@@ -36,14 +36,14 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
     resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
       ...initialValues,
-      image: initialValues.imageUrl ?? "",
+      image: initialValues.imageUrl ?? "",                                      // Si la imagen es una URL se usa, sino utiliza un string vacío
     }
   });
 
   const onSubmmit = (values: z.infer<typeof updateWorkspaceSchema>) => {        // El submit recibe los values del form y se valida con el esquema
-    const finalValues = {                                                       // Se crea un objeto con los valores del form y la imagen subida
-      ...values,
-      image: values.image instanceof File ? values.image : ""
+    const finalValues = {                                                       // Se crea un objeto  
+      ...values,                                                                // con los valores del form
+      image: values.image instanceof File ? values.image : ""                   // y la imagen subida (sino existe (undefined) se usa un string vacío)
     }
     mutate({ 
       form: finalValues,

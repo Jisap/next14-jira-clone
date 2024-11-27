@@ -124,7 +124,7 @@ const app = new Hono()
         );
         uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`; // Se crea la URL de la imagen subida
       } else {
-        uploadedImageUrl = image 
+        uploadedImageUrl = image                                   // Si la imagen no es un objeto File se almacena como string
       }
       
       const workspace = await databases.updateDocument(             // Se actualiza el workspace en la base de datos
