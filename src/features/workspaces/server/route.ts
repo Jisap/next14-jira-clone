@@ -147,7 +147,7 @@ const app = new Hono()
       const databases = c.get("databases")
       const user = c.get("user")
       const { workspaceId } = c.req.param()
-      
+
       const member = await getMember({                             // Obtiene el miembro del workspace
         databases,
         workspaceId,
@@ -156,6 +156,8 @@ const app = new Hono()
       if(!member || member.role !== MemberRole.ADMIN){
         return c.json({ error: "You are not authorized to perform this action" }, 401) // Validamos que el miembro del workspace sea admin para poder actualizar el workspace
       }
+
+      // TODO: Delete members, projects and tasks
 
       const workspace = await databases.deleteDocument(             // Se elimina el workspace en la base de datos
         DATABASE_ID,
