@@ -36,7 +36,7 @@ export const WorkspaceSwitcher = () => {
         </p>
         <RiAddCircleFill 
           className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition" 
-          onClick={open}
+          onClick={open} // open añade param a la url -> isOpen=true -> CreateWorkspaceModal -> ResponsiveModal -> CreateWorkspaceForm
         />
       </div>
 

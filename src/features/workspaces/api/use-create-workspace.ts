@@ -29,7 +29,7 @@ export const useCreateWorkspace = () => {                 // Hook para manejar u
     },
     onError: (error) => {
       console.log({error});
-      toast.error("Failer to create workspace");
+      toast.error("Failed to create workspace");
     }
   })
 

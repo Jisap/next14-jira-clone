@@ -30,7 +30,7 @@ export const useDeleteWorkspace = () => {                 // Hook para manejar u
     },
     onError: (error) => {
       console.log({error});
-      toast.error("Failer to delete workspace");
+      toast.error("Failed to delete workspace");
     }
   })
 
