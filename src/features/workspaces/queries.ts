@@ -4,7 +4,6 @@ import { cookies } from "next/headers"
 import { Account, Client, Databases, Query } from "node-appwrite"
 import { AUTH_COOKIE } from "@/features/auth/constants"
 import { DATABASE_ID, MEMBERS_ID, WORKSPACE_ID } from "@/config"
-import workspaces from '@/features/workspaces/server/route';
 import { getMember } from "../members/utils"
 import { Workspace } from "./types"
 
