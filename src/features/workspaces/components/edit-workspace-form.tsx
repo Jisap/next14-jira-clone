@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
 import { useUpdateWorkspace } from "../api/use-update-workspace";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useDeleteWorkspace } from "../api/use-delete-workspace";
 
 
 interface EditWorkspaceFormProps {
@@ -30,18 +31,13 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
   
   const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
+  const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } = useDeleteWorkspace();
 
   const [DeleteDialog, confirmDelete] = useConfirm(
     "Delete Workspace", 
     "This action cannot be undone", 
     "destructive"
   );
-
-  const handleDelete = async () => {  // Cuando se hace click en el boton de borrar -> se muestra el modal de confirmación
-    const ok = await confirmDelete(); // y espera a que se resuelva la promesa
-    if(!ok) return
-    console.log("...deleting");
-  }
 
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -52,6 +48,20 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
       image: initialValues.imageUrl ?? "",                                      // Si la imagen es una URL se usa, sino utiliza un string vacío
     }
   });
+
+  const handleDelete = async () => {  // Cuando se hace click en el boton de borrar -> se muestra el modal de confirmación
+    const ok = await confirmDelete(); // y espera a que se resuelva la promesa
+    if (!ok) return
+
+    deleteWorkspace({
+      param: { workspaceId: initialValues.$id },
+    }, {
+      onSuccess: () => {
+        router.push("/")
+        window.location.href="/"
+      }
+    })
+  }
 
   const onSubmmit = (values: z.infer<typeof updateWorkspaceSchema>) => {        // El submit recibe los values del form y se valida con el esquema
     const finalValues = {                                                       // Se crea un objeto  
@@ -217,7 +227,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
           </Form>
         </CardContent>
       </Card>
-      
+
       <Card className="w-full h-full border-none shadow-slate-200">
         <CardContent className="p-7">
           <div className="flex flex-col">

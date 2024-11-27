@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 
 type ResponseType = InferResponseType<typeof client.api.workspaces[":workspaceId"]["$delete"], 200>;  // Tipos inferidos de la respuesta de la API con hono
-type RequestType = InferRequestType<typeof client.api.workspaces[":workspaceId"]>
+type RequestType = InferRequestType<typeof client.api.workspaces[":workspaceId"]["$delete"]>
 
 
 export const useDeleteWorkspace = () => {                 // Hook para manejar una mutación de borrado de un workspace con tanstack
@@ -19,7 +19,7 @@ export const useDeleteWorkspace = () => {                 // Hook para manejar u
     mutationFn: async( { param } ) => {                                                        // la función de la mutación toma el param (workspaceId) como el RequestType
       const response = await client.api.workspaces[":workspaceId"]["$delete"]({ param });      // y realizará una llamada a client.api.workspaces[":workspaceId"]["$delete"]({ param }) 
       
-      if (!response.ok) throw new Error("Failed to create workspace");
+      if (!response.ok) throw new Error("Failed to delete workspace");
 
       return response.json()                                                                   // retorna el json de la respuesta (workspaceId borrado) 
     },
