@@ -3,7 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { sessionMiddleware } from "@/lib/session-middleware";
 import { createWorkspaceSchema, updateWorkspaceSchema } from "../schemas";
 import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACE_ID } from "@/config";
-import { ID, Query } from "node-appwrite";
+import { ID, Query, Databases } from 'node-appwrite';
 import workspaces from '@/features/workspaces/server/route';
 import { MemberRole } from "@/features/members/type";
 import { generateInviteCode } from "@/lib/utils";
@@ -139,6 +139,33 @@ const app = new Hono()
 
       return c.json({ data: workspace })
     }
+  )
+  .delete(
+    "/:workspaceId",
+    sessionMiddleware,
+    async (c) => {
+      const databases = c.get("databases")
+      const user = c.get("user")
+      const { workspaceId } = c.req.param()
+      
+      const member = await getMember({                             // Obtiene el miembro del workspace
+        databases,
+        workspaceId,
+        userId: user.$id,
+      })
+      if(!member || member.role !== MemberRole.ADMIN){
+        return c.json({ error: "You are not authorized to perform this action" }, 401) // Validamos que el miembro del workspace sea admin para poder actualizar el workspace
+      }
+
+      const workspace = await databases.deleteDocument(             // Se elimina el workspace en la base de datos
+        DATABASE_ID,
+        WORKSPACE_ID,
+        workspaceId,
+      );
+
+      return c.json({ data: { $id: workspaceId } })
+    }
+
   )
 
 export default app;
