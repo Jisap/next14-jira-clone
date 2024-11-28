@@ -8,6 +8,7 @@ import workspaces from '@/features/workspaces/server/route';
 import { MemberRole } from "@/features/members/type";
 import { generateInviteCode } from "@/lib/utils";
 import { getMember } from "@/features/members/utils";
+import { Workspace } from '../types';
 
 
 
@@ -159,7 +160,7 @@ const app = new Hono()
 
       // TODO: Delete members, projects and tasks
 
-      const workspace = await databases.deleteDocument(             // Se elimina el workspace en la base de datos
+      await databases.deleteDocument(                               // Se elimina el workspace en la base de datos
         DATABASE_ID,
         WORKSPACE_ID,
         workspaceId,
@@ -167,7 +168,36 @@ const app = new Hono()
 
       return c.json({ data: { $id: workspaceId } })
     }
-
   )
+  .post(
+    "/:workspaceId/reset-invite-code",
+    sessionMiddleware,
+    async (c) => {
+      const databases = c.get("databases")
+      const user = c.get("user")
+      const { workspaceId } = c.req.param()
+
+      const member = await getMember({                             // Obtiene el miembro del workspace
+        databases,
+        workspaceId,
+        userId: user.$id,
+      })
+      if (!member || member.role !== MemberRole.ADMIN) {
+        return c.json({ error: "You are not authorized to perform this action" }, 401) // Validamos que el miembro del workspace sea admin para poder actualizar el workspace
+      }
+
+      const workspace =await databases.updateDocument(              // Se elimina el workspace en la base de datos
+        DATABASE_ID,
+        WORKSPACE_ID,
+        workspaceId,
+        {
+          inviteCode: generateInviteCode(6),                        // se genera un nuevo código de invitación
+        }
+      );
+
+      return c.json({ data: workspace  })
+    }
+  )
+
 
 export default app;
