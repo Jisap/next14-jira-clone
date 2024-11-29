@@ -32,17 +32,26 @@ export const getWorkspaces = async() => { // Función para obtener los workspace
     const user = await account.get();                                          // se obtiene el user logueado desde la cuenta
     
     //const databases = new Databases(client);                                 // Se crean una instancia de databases basada en el client de appWrite 
+    
     const members = await databases.listDocuments(                             // Desde databases se obtienen los members cuyo userId coincida con el user logueado
-      DATABASE_ID,                                                             // En appWrite por cada workspace se crea un member, aunque sea el mismo user
+      DATABASE_ID,                                                             // En appWrite cada vez que un usario se une a un workspace se crea un member.
       MEMBERS_ID,
       [Query.equal("userId", user.$id)],
     );
 
-    if (members.total === 0) {
+    // {
+    //   documents: [
+    //     { $id: "member1", userId: "user123", workspaceId: "workspaceA" },
+    //     { $id: "member2", userId: "user123", workspaceId: "workspaceB" }
+    //   ],
+    //     total: 2
+    // }
+
+    if (members.total === 0) {                                                  // Verificamos si hay resultados, si el user no esta asociado a ningun workspace se retorna un objeto vacio
       return { documents: [], total: 0 } 
     }
 
-    const workspaceIds = members.documents.map((member) => member.workspaceId); // Se obtienen los IDs de los workspaces asociados al usuario logueado
+    const workspaceIds = members.documents.map((member) => member.workspaceId); // Extrae el campo workspaceId de cada documento en members.documents. Se obtienen asi los IDs de los workspaces asociados al usuario logueado
 
     const workspaces = await databases.listDocuments(                           // Con esos IDs se obtienen los workspaces
       DATABASE_ID,
@@ -104,6 +113,33 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => { // F
     );
 
     return workspace
+
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    return null
+  }
+
+}
+
+interface GetWorkspaceInfoProps {
+  workspaceId: string;
+}
+
+export const getWorkspaceInfo = async ({ workspaceId }: GetWorkspaceInfoProps) => { // Función para obtener un workspace 
+
+  try {
+
+    const { databases } = await createSessionClient();                // Se crean instancias de cliente de appWrite
+   
+    const workspace = await databases.getDocument<Workspace>(                  // Se obtiene el workspace basado en el Id del param
+      DATABASE_ID,
+      WORKSPACE_ID,
+      workspaceId
+    );
+
+    return {
+      name: workspace.name,
+    }
 
   } catch (error) {
     console.error("Error fetching current user:", error);
