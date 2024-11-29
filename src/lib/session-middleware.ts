@@ -37,7 +37,7 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
     const session = getCookie(c, AUTH_COOKIE)                               // Se busca la cookie para verificar si el usuario tiene una sesión activa. 
 
     if(!session){
-      return c.json({ error: "Unauthorized" }, 401)                     // Si no existe una sesión, se devuelve un error 401
+      return c.json({ error: "Unauthorized" }, 401)                         // Si no existe una sesión, se devuelve un error 401
     }
 
     client.setSession(session)                                              // Si existe una sesión, se establece en el client

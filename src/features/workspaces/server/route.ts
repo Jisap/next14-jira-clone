@@ -4,11 +4,11 @@ import { sessionMiddleware } from "@/lib/session-middleware";
 import { createWorkspaceSchema, updateWorkspaceSchema } from "../schemas";
 import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACE_ID } from "@/config";
 import { ID, Query, Databases } from 'node-appwrite';
-import workspaces from '@/features/workspaces/server/route';
 import { MemberRole } from "@/features/members/type";
 import { generateInviteCode } from "@/lib/utils";
 import { getMember } from "@/features/members/utils";
 import { Workspace } from '../types';
+import { z } from "zod";
 
 
 
@@ -186,16 +186,61 @@ const app = new Hono()
         return c.json({ error: "You are not authorized to perform this action" }, 401) // Validamos que el miembro del workspace sea admin para poder actualizar el workspace
       }
 
-      const workspace =await databases.updateDocument(              // Se elimina el workspace en la base de datos
+      const workspace =await databases.updateDocument(              // Se actualiza el workspace en la base de datos
         DATABASE_ID,
         WORKSPACE_ID,
         workspaceId,
         {
-          inviteCode: generateInviteCode(6),                        // se genera un nuevo código de invitación
+          inviteCode: generateInviteCode(6),                        // con nuevo un nuevo código de invitación
         }
       );
 
       return c.json({ data: workspace  })
+    }
+  )
+  .post(
+    "/:workspaceId/join",                                         // Endpoint para unirse a un workspace
+    sessionMiddleware,                                            // Solo usuarios autenticados pueden acceder a esta ruta, ademas establece el contexto de la sesión   
+    zValidator("json", z.object({ code: z.string()})),            // Se valida que el code sea un string
+    async (c) => {
+      const { workspaceId } = c.req.param();                      // Se obtiene el workspaceId de los params (url)
+      const { code } = c.req.valid("json");                       // También el code (desde el body de la solicitud)
+      const databases = c.get("databases");                       // Se obtiene la base de datos
+      const user = c.get("user");
+
+      const member = await getMember({                            // Se comprueba si el usuario ya es miembro del workspace  
+        databases,
+        workspaceId,
+        userId: user.$id,
+      })
+
+      if(member){
+        return c.json({ error: "You are already a member of this workspace" }, 400) 
+      }
+
+      const workspace = await databases.getDocument<Workspace>(   // Si el usuario no es miembro del workspace se obtiene el workspace
+        DATABASE_ID,
+        WORKSPACE_ID,
+        workspaceId,
+      )
+
+      if(workspace.inviteCode !== code){                          // validamos que el código del body sea igual al código del workspace
+        return c.json({ error: "Invalid invite code" }, 400)
+      }
+
+      await databases.createDocument(                             // Si el usuario no es miembro y code es correcto se crea un miembro dentro de la tabla de member
+        DATABASE_ID,  
+        MEMBERS_ID, 
+        ID.unique(), 
+        {
+          userId: user.$id, 
+          workspaceId: workspace.$id, 
+          role: MemberRole.MEMBER, 
+        }
+      )
+
+      return c.json({ data: workspace })
+                  
     }
   )
 
