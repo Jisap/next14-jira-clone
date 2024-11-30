@@ -8,7 +8,7 @@ interface UseGetMembersProps {
 
 export const useGetMembers = ({ workspaceId }: UseGetMembersProps) => {
   const query = useQuery({
-    queryKey: ["members"],
+    queryKey: ["members", workspaceId],
     queryFn: async () => {
       const response = await client.api.members.$get({query: { workspaceId }})
 
