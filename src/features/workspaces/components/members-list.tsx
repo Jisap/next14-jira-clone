@@ -10,9 +10,7 @@ import { useGetMembers } from "@/features/members/api/use-get-members";
 import { Fragment } from "react";
 import { MemberAvatar } from "@/features/members/components/member-avatar";
 import { Separator } from "@/components/ui/separator";
-
-
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
 
@@ -54,13 +52,40 @@ export const MembersList = () => {
                 <p className="text-sm font-medium">{member.name}</p>
                 <p className="text-xs text-muted-foreground">{member.email}</p>
               </div>
-              <Button 
-                className="ml-auto"
-                variant="secondary"
-                size="icon"  
-              >
-                <MoreVerticalIcon className="size-4 text-muted-foreground"/>
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    className="ml-auto"
+                    variant="secondary"
+                    size="icon"  
+                  >
+                    <MoreVerticalIcon className="size-4 text-muted-foreground"/>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="bottom" align="end">
+                  <DropdownMenuItem 
+                    className="font-medium"
+                    onClick={() => {}}
+                    disabled={false}
+                  >
+                    Set as Administrator
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="font-medium"
+                    onClick={() => { }}
+                    disabled={false}
+                  >
+                    Set as Member
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="font-medium text-amber-700"
+                    onClick={() => { }}
+                    disabled={false}
+                  >
+                    Remove {member.name}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             {index < data.documents.length - 1 && ( <Separator className="my-2.5"/>)}
           </Fragment>
