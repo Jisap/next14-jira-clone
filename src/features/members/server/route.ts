@@ -11,7 +11,7 @@ import { MemberRole } from "../type";
 
 
 const app = new Hono()
-  .get(
+  .get(                                                     // Endpoint para obtener todos los miembros del workspace
     "/",
     sessionMiddleware,
     zValidator("query", z.object({ workspaceId: z.string() })),
@@ -56,7 +56,7 @@ const app = new Hono()
       })
     }
   )
-  .delete(
+  .delete(                                                            // Endpoint para eliminar un miembro del workspace
     "/:memberId",
     sessionMiddleware,
     async (c) => {
@@ -64,39 +64,95 @@ const app = new Hono()
       const user = c.get("user");
       const databases = c.get("databases");
 
-      const memberToDelete = await databases.getDocument(             // Se obtiene los datos del miembro a eliminar
+      const memberToDelete = await databases.getDocument(              // Se obtiene los datos del miembro a eliminar
         DATABASE_ID,
         MEMBERS_ID,
         memberId,
       )
 
-      const allMembersInWorkspace = await databases.listDocuments(    // Se obtienen todos los miembros del workspace asociado al miembro a eliminar
+      const allMembersInWorkspace = await databases.listDocuments(     // Se obtienen todos los miembros del workspace asociado al miembro a eliminar
         DATABASE_ID,
         MEMBERS_ID,
         [Query.equal("workspaceId", memberToDelete.workspaceId)],
       )
 
-      const member = await getMember({                                // Se comprueba si el usuario que hace la petición es el miembro del workspace
+      const member = await getMember({                                 // Se comprueba si el usuario que hace la petición es el miembro del workspace
         databases,
         workspaceId: memberToDelete.workspaceId,
         userId: user.$id,
       })
 
-      if(!member){                                                    // Si no es miembro del workspace se retorna error
+      if(!member){                                                     // Si no es miembro del workspace se retorna error
         return c.json({error: "Unauthorized"}, 401)
       }
 
-      if(member.id !== memberToDelete.$id && member.role !== MemberRole.ADMIN){ // Si es usuario que hace la petición no es el miembro que se intenta eliminar y no es admin se retorna error
+      if(member.id !== memberToDelete.$id && member.role !== MemberRole.ADMIN){ // Si el usuario que hace la petición no es el miembro que se intenta eliminar y no es admin se retorna error
         return c.json({error: "Unauthorized"}, 401)
       }
 
-      await databases.deleteDocument(                                 // Si las validaciones son existosas se elimina el miembro del 
+      if(allMembersInWorkspace.total === 1){                           // Si el workspace solo tiene un miembro se retorna error
+        return c.json({error: "Cannot delete the only member"}, 400)
+      }
+
+      await databases.deleteDocument(                                  // Si las validaciones son exisosas se elimina el miembro 
         DATABASE_ID,
         MEMBERS_ID,
         memberId,
       );
 
-      return c.json({ data: { $id: memberId } })                      // Retorna un objeto con el id del miembro eliminado.
+      return c.json({ data: { $id: memberToDelete.$id } })             // Retorna un objeto con el id del miembro eliminado.
+    }
+  )
+  .patch(                                                              // Endpoint para actualizar el role de un miembro del workspace
+    "/:memberId",
+    sessionMiddleware,
+    zValidator("json", z.object({ role: z.nativeEnum(MemberRole) })),
+    async (c) => {
+      const { memberId } = c.req.param();
+      const { role } = c.req.valid("json");
+      const user = c.get("user");
+      const databases = c.get("databases");
+
+      const memberToUpdate = await databases.getDocument(               // Se obtiene los datos del miembro a actualizar
+        DATABASE_ID,
+        MEMBERS_ID,
+        memberId,
+      )
+
+      const allMembersInWorkspace = await databases.listDocuments(      // Se obtienen todos los miembros del workspace asociado al miembro a actualizar
+        DATABASE_ID,
+        MEMBERS_ID,
+        [Query.equal("workspaceId", memberToUpdate.workspaceId)],
+      )
+
+      const member = await getMember({                                  // Se comprueba si el usuario que hace la petición es el miembro del workspace
+        databases,
+        workspaceId: memberToUpdate.workspaceId,
+        userId: user.$id,
+      })
+
+      if (!member) {                                                    // Si no es miembro del workspace se retorna error
+        return c.json({ error: "Unauthorized" }, 401)
+      }
+
+      if (member.role !== MemberRole.ADMIN) {                           // Si el usuario que hace la petición no es admin se retorna error
+        return c.json({ error: "Unauthorized" }, 401)
+      }
+
+      if (allMembersInWorkspace.total === 1) {                          // Si el workspace solo tiene un miembro se retorna error
+        return c.json({ error: "Cannot downgrade the only member" }, 400)
+      }
+
+      await databases.updateDocument(                                   // Si las validaciones son exisosas se actualiza el miembro 
+        DATABASE_ID,
+        MEMBERS_ID,
+        memberId,
+        {
+          role 
+        }
+      );
+
+      return c.json({ data: { $id: memberToUpdate.$id } })              // Retorna un objeto con el id del miembro actualizado.
     }
   )
 
