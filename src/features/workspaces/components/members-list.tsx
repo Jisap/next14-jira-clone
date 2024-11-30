@@ -9,6 +9,7 @@ import DottedSeparator from "@/components/dotted-separator";
 import { useGetMembers } from "@/features/members/api/use-get-members";
 import { Fragment } from "react";
 import { MemberAvatar } from "@/features/members/components/member-avatar";
+import { Separator } from "@/components/ui/separator";
 
 
 
@@ -58,9 +59,10 @@ export const MembersList = () => {
                 variant="secondary"
                 size="icon"  
               >
-                <MoreVerticalIcon />
+                <MoreVerticalIcon className="size-4 text-muted-foreground"/>
               </Button>
             </div>
+            {index < data.documents.length - 1 && ( <Separator className="my-2.5"/>)}
           </Fragment>
         ))}
       </CardContent>
