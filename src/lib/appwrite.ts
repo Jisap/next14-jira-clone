@@ -44,5 +44,9 @@ export async function createAdminClient() {
     get account() {               // Cada vez que se acceda a la propiedad account, se creará una nueva instancia de Account
       return new Account(client); // Una vez tienes la instancia de Account, puedes llamar a métodos como: get(), create(), createEmailPasswordSession()
     },
+    get users(){
+      return new Users(client);   // Tambien con el client se puede acceder a los módulos de Users
+    }
+
   };
 }
