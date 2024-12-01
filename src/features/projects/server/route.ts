@@ -15,6 +15,11 @@ const app = new Hono()
       const user = c.get("user")
       const databases = c.get("databases")
       const { workspaceId } = c.req.valid("query")
+      if(!workspaceId) {
+        return c.json({error: "Missing workspaceId"}, 400)
+      }
+
+
       const member = await getMember({                       // Verifica si el usuario logueado que realiza la petición pertenece a un workspace
         databases,
         workspaceId,
