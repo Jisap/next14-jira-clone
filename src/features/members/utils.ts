@@ -9,7 +9,7 @@ interface GetMemberProps{
   userId: string;
 }
 
-export const getMember = async ({ databases, workspaceId, userId }: GetMemberProps) => {
+export const getMember = async ({ databases, workspaceId, userId }: GetMemberProps) => { // Busca si un usuario específico pertenece a un workspace en particular
   const members = await databases.listDocuments(
     DATABASE_ID,
     MEMBERS_ID,
