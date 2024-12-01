@@ -4,7 +4,7 @@ import { client } from "@/lib/rpc";
 import { toast } from "sonner";
 
 
-type ResponseType = InferResponseType<typeof client.api.projects["$post"]>;  // Tipos inferidos de la respuesta de la API con hono
+type ResponseType = InferResponseType<typeof client.api.projects["$post"], 200>;  // Tipos inferidos de la respuesta de la API con hono
 type RequestType = InferRequestType<typeof client.api.projects["$post"]>
 
 
