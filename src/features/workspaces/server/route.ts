@@ -86,7 +86,7 @@ const app = new Hono()
         {
           userId: user.$id,                                       // y estará asociado al usuario que creó el workspace,
           workspaceId: workspace.$id,                             // al workspace que creó,
-          role: MemberRole.ADMIN,                                          // y será un admin
+          role: MemberRole.ADMIN,                                 // y será un admin
         }
       )
 

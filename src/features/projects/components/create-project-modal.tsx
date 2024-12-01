@@ -5,7 +5,7 @@ import { CreateProjectForm } from "./create-project-form";
 import { useCreateProjectModal } from "../hook/use-create-project-modal";
 
 
-export const CreateWorkspaceModal = () => {
+export const CreateProjectModal = () => {
 
   const { isOpen, setIsOpen, close } = useCreateProjectModal();
 

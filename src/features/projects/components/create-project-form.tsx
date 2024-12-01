@@ -34,7 +34,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => { // 
   const inputRef = useRef<HTMLInputElement>(null);
   
   const form = useForm<z.infer<typeof createProjectSchema>>({                    // Definición del form con react-hook-form
-    resolver: zodResolver(createProjectSchema),
+    resolver: zodResolver(createProjectSchema.omit({workspaceId: true})),
     defaultValues: {
       name: "",
     }

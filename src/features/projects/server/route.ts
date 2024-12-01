@@ -51,7 +51,6 @@ const app = new Hono()
         ID.unique(),
         {
           name,                                                    // y se almacena el nombre del workspace
-          userId: user.$id,                                        // y el ID del user que lo creó
           imageUrl: uploadedImageUrl,                              // y la URL de la imagen subida (avatar)
           workspaceId                                              // y el workspace al que pertenece
         }
@@ -67,6 +66,7 @@ const app = new Hono()
     sessionMiddleware,
     zValidator("query", z.object({ workspaceId: z.string() })),
     async (c) => {
+
       const user = c.get("user")
       const databases = c.get("databases")
       const { workspaceId } = c.req.valid("query")
@@ -90,7 +90,7 @@ const app = new Hono()
         PROJECTS_ID,
         [
           Query.equal("workspaceId", workspaceId),
-          Query.orderDesc("createdAt"),
+          Query.orderDesc("$createdAt"),
         ],
       );
       

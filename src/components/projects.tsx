@@ -1,6 +1,7 @@
 "use client"
 
 import { useGetProjects } from "@/features/projects/api/use-get-projects";
+import { useCreateProjectModal } from "@/features/projects/hook/use-create-project-modal";
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -13,6 +14,7 @@ export const Projects = () => {
 
   const projectId = null;                                                   // TODO: Use the projectId hook
   const  pathname  = usePathname();
+  const  { open } = useCreateProjectModal();
   const workspaceId = useWorkspaceId(); // id desde la url
   const { data } = useGetProjects({ workspaceId });
 
@@ -24,7 +26,7 @@ export const Projects = () => {
         </p>
         <RiAddCircleFill
           className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition"
-          onClick={() => {}} 
+          onClick={open} 
         />
       </div>
       {data?.documents.map((project) => {
