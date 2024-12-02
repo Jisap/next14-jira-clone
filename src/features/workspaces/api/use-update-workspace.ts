@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 type ResponseType = InferResponseType<typeof client.api.workspaces[":workspaceId"]["$patch"], 200>;  // Tipos inferidos de la respuesta de la API con hono. La respuesta devuelve data y un status que por defecto es success
@@ -9,6 +10,8 @@ type RequestType = InferRequestType<typeof client.api.workspaces[":workspaceId"]
 
 
 export const useUpdateWorkspace = () => {                 // Hook para manejar una mutación de actualizaciónde un workspace con tanstack
+  
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutation = useMutation<
@@ -25,6 +28,7 @@ export const useUpdateWorkspace = () => {                 // Hook para manejar u
     },
     onSuccess: ({data}) => {
       toast.success("Workspace updated successfully");
+      router.refresh()
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
       queryClient.invalidateQueries({ queryKey: ["workspace", data.$id] });
     },
