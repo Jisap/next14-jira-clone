@@ -16,9 +16,6 @@ const WorkspaceIdSettingsPage = async({ params }: WorkspaceIdSettingsPageProps) 
   if(!user) redirect("/sign-in");
 
   const initialValues = await getWorkspace({ workspaceId: params.workspaceId }); // Obtenemos el workspace en base al id de los params
-  if(!initialValues){                                                            // Si no existe el workspace 
-    redirect(`/workspaces/${params.workspaceId}`);                               // se redirige a la página de creación 
-  }
 
   return (
     <div className="w-full lg:max-w-xl">
