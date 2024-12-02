@@ -12,8 +12,7 @@ import { RiAddCircleFill } from "react-icons/ri"
 
 
 export const Projects = () => {
-
-  const projectId = null;                                                   // TODO: Use the projectId hook
+  // TODO: Use the projectId hook
   const  pathname  = usePathname();
   const  { open } = useCreateProjectModal();
   const workspaceId = useWorkspaceId(); // id desde la url
