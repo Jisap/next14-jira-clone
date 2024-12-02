@@ -49,7 +49,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => { // 
     mutate({ form: finalValues }, {                                              // Se envia el objeto a la mutation
       onSuccess: ({data}) => {                                                   // Si se obtuvo la data de la mutation
         form.reset();
-        //TODO: Redirect to project page
+        router.push(`/workspaces/${workspaceId}/projects/${data.$id}`)
       }
     });
   }
