@@ -13,9 +13,7 @@ export const getProject = async ({ projectId }: GetProjectProps) => {        // 
 
     const { account, databases } = await createSessionClient();                // Se crean instancias de cliente de appWrite
     const user = await account.get();                                          // se obtiene el user logueado desde la cuenta
-    // const databases = new Databases(client);                                // Se crean una instancia de databases basada en el client de appWrite 
-
-
+    
     const project = await databases.getDocument<Project>(                      // Se obtiene el project basado en el Id del param
       DATABASE_ID,
       PROJECTS_ID,
