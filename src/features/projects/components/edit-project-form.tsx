@@ -17,11 +17,11 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Project } from "../types";
 import { useConfirm } from "@/hooks/use-confirm";
-//import { useDeleteWorkspace } from "../api/use-delete-workspace";
 
 import { useUpdateProject } from "../api/use-update-project";
 import { updateProjectSchema } from "../schema";
 import { updateWorkspaceSchema } from "@/features/workspaces/schemas";
+import { useDeleteProject } from "../api/use-delete-project";
 
 
 interface EditProjectFormProps {
@@ -33,17 +33,17 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
   
   const router = useRouter();
   const { mutate, isPending } = useUpdateProject();
-  //const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } = useDeleteWorkspace();
+  const { mutate: deleteProject, isPending: isDeletingProject } = useDeleteProject();
 
   const [DeleteDialog, confirmDelete] = useConfirm(
-    "Delete Workspace", 
+    "Delete Project", 
     "This action cannot be undone", 
     "destructive"
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
   
-  const form = useForm<z.infer<typeof updateProjectSchema>>({                 // Definición del form con react-hook-form
+  const form = useForm<z.infer<typeof updateProjectSchema>>({                   // Definición del form con react-hook-form
     resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
       ...initialValues,
@@ -55,18 +55,16 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
     const ok = await confirmDelete(); // y espera a que se resuelva la promesa
     if (!ok) return
 
-    // deleteWorkspace({
-    //   param: { workspaceId: initialValues.$id },
-    // }, {
-    //   onSuccess: () => {
-    //     router.push("/")
-    //     window.location.href="/"
-    //   }
-    // })
+    deleteProject({
+      param: { projectId: initialValues.$id },
+    }, {
+      onSuccess: () => {
+        window.location.href=`/workspaces/${initialValues.workspaceId}`
+      }
+    })
   };
 
-
-  const onSubmmit = (values: z.infer<typeof updateProjectSchema>) => {        // El submit recibe los values del form y se valida con el esquema
+  const onSubmmit = (values: z.infer<typeof updateProjectSchema>) => {          // El submit recibe los values del form y se valida con el esquema
     const finalValues = {                                                       // Se crea un objeto  
       ...values,                                                                // con los valores del form
       image: values.image instanceof File ? values.image : ""                   // y la imagen subida (sino existe (undefined) se usa un string vacío)
@@ -74,7 +72,7 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
     mutate({ 
       form: finalValues,
       param: { projectId: initialValues.$id },
-    }, {                                                                        // Se envia el objeto al mutation
+    }, {                                                                        // Se envia el objeto a la mutation
       onSuccess: ({data}) => {                                                  // Si se obtuvo la data de la mutation se resetea el form
         form.reset();
         //router.push(`/workspaces/${data.$id}`)                                // Se redirige al nuevo workspace
@@ -90,10 +88,6 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
       form.setValue("image", undefined); 
     }
   }
-
-  const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`;
-
-
 
   return (
     <div className="flex flex-col gap-y-4">
