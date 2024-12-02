@@ -9,8 +9,6 @@ interface GetProjectProps {
 
 export const getProject = async ({ projectId }: GetProjectProps) => {        // Función para obtener un project
 
-  try {
-
     const { account, databases } = await createSessionClient();                // Se crean instancias de cliente de appWrite
     const user = await account.get();                                          // se obtiene el user logueado desde la cuenta
     
@@ -27,14 +25,8 @@ export const getProject = async ({ projectId }: GetProjectProps) => {        // 
     })
 
     if (!member) {                                                             // Se verifica si el usuario es miembro del workspace
-      return null
+      throw new Error("Unauthorized")
     }
 
     return project                                                             // Se retorna el project
-
-  } catch (error) {
-    console.error("Error fetching current user:", error);
-    return null
-  }
-
 }

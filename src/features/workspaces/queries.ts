@@ -11,8 +11,6 @@ import { createSessionClient } from "@/lib/appwrite"
 
 
 export const getWorkspaces = async() => { // Función para obtener los workspaces del usuario logueado
-
-  try { 
     
     // const client = new Client()                                             // Se crea una instancia de Client de Appwrite, 
     //   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)              // configurada con el endpoint 
@@ -64,11 +62,6 @@ export const getWorkspaces = async() => { // Función para obtener los workspace
 
     return workspaces
   
-} catch(error){
-    console.error("Error fetching current user:", error);
-    return { documents: [], total: 0 }
-}
-
 }
 
 
@@ -77,8 +70,6 @@ interface GetWorkspaceProps {
 }
 
 export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => { // Función para obtener un workspace 
-
-  try {
 
     // const client = new Client()                                             // Se crea una instancia de Client de Appwrite, 
     //   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)              // configurada con el endpoint 
@@ -103,7 +94,7 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => { // F
     })
 
     if (!member) {                                                             // Se verifica si el usuario es miembro del workspace
-      return null
+      throw new Error("Unauthorized")
     }
 
     const workspace = await databases.getDocument<Workspace>(                  // Se obtiene el workspace basado en el Id del param
@@ -114,11 +105,6 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => { // F
 
     return workspace
 
-  } catch (error) {
-    console.error("Error fetching current user:", error);
-    return null
-  }
-
 }
 
 interface GetWorkspaceInfoProps {
@@ -126,8 +112,6 @@ interface GetWorkspaceInfoProps {
 }
 
 export const getWorkspaceInfo = async ({ workspaceId }: GetWorkspaceInfoProps) => { // Función para obtener un workspace 
-
-  try {
 
     const { databases } = await createSessionClient();                // Se crean instancias de cliente de appWrite
    
@@ -140,11 +124,5 @@ export const getWorkspaceInfo = async ({ workspaceId }: GetWorkspaceInfoProps) =
     return {
       name: workspace.name,
     }
-
-  } catch (error) {
-    console.error("Error fetching current user:", error);
-    return null
-  }
-
 }
 
