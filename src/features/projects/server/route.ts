@@ -5,7 +5,8 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { ID, Query } from "node-appwrite";
 import { z } from "zod";
-import { createProjectSchema } from "../schema";
+import { createProjectSchema, updateProjectSchema } from "../schema";
+import { Project } from "../types";
 
 const app = new Hono()
   .post(
@@ -95,6 +96,64 @@ const app = new Hono()
       );
       
       return c.json({ data: projects })
+    }
+  )
+  .patch(
+    "/:projectId",                                // param
+    sessionMiddleware,                            // usuario autenticado
+    zValidator("form", updateProjectSchema),      // info del formulario validado según su esquema
+    async (c) => {
+      const databases = c.get("databases")
+      const storage = c.get("storage")
+      const user = c.get("user")
+
+      const { projectId } = c.req.param()
+      const { name, image } = c.req.valid("form")
+
+      const existingProject = await databases.getDocument<Project>(  // Obtenemos el proyecto
+        DATABASE_ID,
+        PROJECTS_ID,
+        projectId
+      )
+
+      const member = await getMember({                               // Obtenemos el miembro del workspace asociado al proyecto
+        databases, 
+        workspaceId: existingProject.workspaceId, 
+        userId: user.$id 
+      }) 
+
+      if (!member) {
+        return c.json({ error: "Unauthorized" }, 401)                // Validamos que el miembro pertenezca al workspace para poder actualizarlo
+      }
+
+      let uploadedImageUrl: string | undefined;                      // Definimos una variable que almacenará la URL de la imagen subida
+
+      if (image instanceof File) {                                   // Si la imagen es un objeto File
+        const file = await storage.createFile(                       // Se crea el archivo en la base de datos de Appwrite
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image,
+        );
+        const arrayBuffer = await storage.getFilePreview(            // Se obtiene la vista previa del archivo
+          IMAGES_BUCKET_ID,
+          file.$id,
+        );
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`; // Se crea la URL de la imagen subida
+      } else {
+        uploadedImageUrl = image                                     // Si la imagen no es un objeto File se almacena como string
+      }
+
+      const project = await databases.updateDocument(                // Se actualiza el project en la base de datos
+        DATABASE_ID,
+        PROJECTS_ID,
+        projectId,
+        {
+          name,                                                     // y se almacena el nombre del workspace
+          imageUrl: uploadedImageUrl,                               // y la URL de la imagen subida (avatar)
+        }
+      );
+
+      return c.json({ data: project })
     }
   )
 
