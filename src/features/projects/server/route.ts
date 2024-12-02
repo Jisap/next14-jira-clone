@@ -156,5 +156,40 @@ const app = new Hono()
       return c.json({ data: project })
     }
   )
+  .delete(
+    "/:projectId",
+    sessionMiddleware,
+    async (c) => {
+      const databases = c.get("databases")
+      const user = c.get("user")
+      const { projectId } = c.req.param()
+
+      const existingProject = await databases.getDocument<Project>(  // Obtenemos el proyecto
+        DATABASE_ID,
+        PROJECTS_ID,
+        projectId
+      )
+
+
+      const member = await getMember({                               // Obtenemos el miembro del workspace asociado al proyecto
+        databases,
+        workspaceId: existingProject.workspaceId,
+        userId: user.$id,
+      })
+      if (!member) {
+        return c.json({ error: "You are not authorized to perform this action" }, 401) // Validamos que exista un miembro del workspace para poder borrarlo
+      }
+
+      // TODO: Delete members, projects and tasks
+
+      await databases.deleteDocument(                                // Se elimina el workspace en la base de datos
+        DATABASE_ID,
+        PROJECTS_ID,
+        projectId,
+      );
+
+      return c.json({ data: { $id: existingProject.$id } })          // Se retorna el id del proyecto eliminado
+    }
+  )
 
 export default app
