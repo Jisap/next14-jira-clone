@@ -29,7 +29,7 @@ const app = new Hono()
       })
     ),
     async (c, next) => {
-      const users = await createAdminClient();                             // Users registrados en appWrite
+      const { users } = await createAdminClient();                         // Users registrados en appWrite
       const databases = c.get("databases");                                // Base de datos de appWrite
       const user = c.get("user");                                          // Usuario autenticado
 
@@ -91,7 +91,7 @@ const app = new Hono()
       const projectIds = tasks.documents.map(task => task.projectId);       // Extraemos los ids de los proyectos de las tareas
       const assigneeIds = tasks.documents.map(task => task.assigneeId);     // Extraemos los ids de los usuarios asignados a las tareas
 
-      const projects = await databases.listDocuments<Project>(              //se obtiene la información de los proyectos correspondientes a las tareas.
+      const projects = await databases.listDocuments<Project>(              // Se obtiene la información de los proyectos correspondientes a las tareas.
         DATABASE_ID,
         PROJECTS_ID,
         projectIds.length > 0
@@ -99,20 +99,32 @@ const app = new Hono()
           : []
       )  
       
-      const assignees = await databases.listDocuments(                      // Se obtiene la información de los usuarios  asignados a las tareas.
-        DATABASE_ID,
+      const members = await databases.listDocuments(                        // Se obtiene la información de los usuarios  asignados a las tareas. Para ello,
+        DATABASE_ID,                                                        
         MEMBERS_ID,
         assigneeIds.length > 0
-          ? [Query.contains("$id", assigneeIds)]
+          ? [Query.contains("$id", assigneeIds)]                            // 1º se obtienen los miembros referenciados en assigneeIds
           : []
-      )    
+      )  
+      
+      const assignees = await Promise.all(                                  // 2º se obtienen los usuarios referenciados en el miembro
+        members.documents.map(async( member ) => {
+          const user = await users.get(member.userId)
+          return {                                                          // y se devuelve como assignees los miembros con los datos relativos a sus usuarios
+            ...member,
+            name: user.name,
+            email: user.email
+          }
+        })
+      )
       
       const populatedTasks = tasks.documents.map((task) => {                // Cada tarea es enriquecida con los detalles de su proyecto y su miembro asignado.
+        
         const project = projects.documents.find(
           (project) => project.$id === task.projectId
         );
 
-        const assignee = assignees.documents.find(
+        const assignee = assignees.find(
           (assignee) => assignee.$id === task.assigneeId
         );
 
