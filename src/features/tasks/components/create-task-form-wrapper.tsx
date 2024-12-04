@@ -31,17 +31,20 @@ export const CreateTaskFormWrapper = ( {
   const isLoading = isLoadingProjects || isLoadingMembers;
 
   if(isLoading){
-    <Card className="w-full h-[714px] border-none shadow-none">
-      <CardContent className="flex items-center justify-center h-full">
-        <Loader className="size-5 animate-spin text-muted-foreground"/>
-      </CardContent>
-    </Card>  
+    return(
+      <Card className="w-full h-[714px] border-none shadow-none">
+        <CardContent className="flex items-center justify-center h-full">
+          <Loader className="size-5 animate-spin text-muted-foreground"/>
+        </CardContent>
+      </Card>  
+    )
   }
 
 
   return (
     <div>
-      TODO: Create Task Form
+      {JSON.stringify(projectsOptions)}
+      {JSON.stringify(membersOptions)}
     </div>
   )
 }
