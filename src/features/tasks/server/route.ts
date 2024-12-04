@@ -88,10 +88,10 @@ const app = new Hono()
         query
       );
 
-      const projectIds = tasks.documents.map(task => task.projectId);       // Extraemos los ids de los proyectos de las tareas
-      const assigneeIds = tasks.documents.map(task => task.assigneeId);     // Extraemos los ids de los usuarios asignados a las tareas
+      const projectIds = tasks.documents.map(task => task.projectId);       // Extraemos los ids de los proyectos de las tareas filtradas
+      const assigneeIds = tasks.documents.map(task => task.assigneeId);     // Extraemos los ids de los usuarios asignados a las tareas filtradas
 
-      const projects = await databases.listDocuments<Project>(              // Se obtiene la información de los proyectos correspondientes a las tareas.
+      const projects = await databases.listDocuments<Project>(              // Se obtiene la información de los proyectos correspondientes a las tareas filtradas.
         DATABASE_ID,
         PROJECTS_ID,
         projectIds.length > 0
