@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { DatePicker } from "@/components/date-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MemberAvatar } from "@/features/members/components/member-avatar";
+import { TaskStatus } from "../types";
 
 
 interface CreateTaskFormProps {
@@ -121,6 +122,44 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
                             </div>
                           </SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+
+                      </FormControl>
+                      <FormMessage />
+                      <SelectContent>
+                        <SelectItem value={TaskStatus.BACKLOG}>
+                          Backlog
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.IN_PROGRESS}>
+                          In progress
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.IN_REVIEW}>
+                          In Review
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.TODO}>
+                          Todo
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.DONE}>
+                          Done
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormItem>
