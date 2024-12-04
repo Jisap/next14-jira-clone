@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef } from "react";
+
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { createTaskSchema } from "../schema";
 import { useCreateTask } from "../api/use-create-task";
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id";
@@ -29,8 +28,6 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
   const workspaceId = useWorkspaceId();
   const router = useRouter();
   const { mutate, isPending } = useCreateTask();
-
-  const inputRef = useRef<HTMLInputElement>(null);
   
   const form = useForm<z.infer<typeof createTaskSchema>>({                    // Definición del form con react-hook-form
     resolver: zodResolver(createTaskSchema.omit({workspaceId: true})),
@@ -74,6 +71,19 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
                         {...field}
                         placeholder="Enter task name"
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dueDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Due Date</FormLabel>
+                    <FormControl>
+                      {/* TODO: Date Picker */}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
