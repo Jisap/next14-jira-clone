@@ -13,6 +13,7 @@ import {
   SelectValue } from "@/components/ui/select";
 import { ListChecksIcon } from "lucide-react";
 import { TaskStatus } from "../types";
+import { useTaksFilters } from "../hooks/use-taks-filters";
 
 
 interface DataFiltersProps {
@@ -37,13 +38,24 @@ export const DataFilters = ({ hideProjectFilter}: DataFiltersProps) => {
     label: member.name,
   }))
 
+  const [{
+    status,
+    assigneeId,
+    projectId,
+    dueDate,
+  }, setFilters] = useTaksFilters(); // Estado con nuqs
+
+  const onStatusChange = (value: string) => {
+    setFilters({ status: value === "all" ? null : value as TaskStatus}) // Establece el estado de status en (filters) y se refleja en la url
+  }
+
   if(isLoading) return null;
 
   return (
     <div className="flex flex-col lg:flex-row gap-2">
       <Select
-        defaultValue={undefined}
-        onValueChange={() => {}}
+        defaultValue={status ?? undefined}
+        onValueChange={(value) => onStatusChange(value)}
       >
         <SelectTrigger className="w-full lg:w-auto h-8">
           <div className="flex items-center pr-2">

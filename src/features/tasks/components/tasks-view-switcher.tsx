@@ -10,17 +10,38 @@ import { useGetTasks } from '../api/use-get-task';
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id"
 import { useQueryState } from "nuqs"
 import { DataFilters } from "./data-filters"
+import { useTaksFilters } from "../hooks/use-taks-filters"
 
 
 
 export const TasksViewSwitcher = () => {
 
+
+  const [{
+    status,
+    assigneeId,
+    projectId,
+    dueDate,
+  }] = useTaksFilters(); // Estado con nuqs
+
   const [view, setView] = useQueryState("tasksView", { // Establece en la url el valor de view, la cual viene del valor seleccionado en Tabs
     defaultValue: "table",
   })
+
   const workspaceId = useWorkspaceId()
-  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({ workspaceId })
   const { open } = useCreateTaskModal();
+
+  const { 
+    data: tasks,
+     isLoading: isLoadingTasks 
+  } = useGetTasks({                  // Se obtienen las tareas según status
+    workspaceId,
+    projectId,
+    assigneeId,
+    status,
+    dueDate,
+  })
+
 
   return (
     <Tabs 
@@ -60,6 +81,7 @@ export const TasksViewSwitcher = () => {
           </Button>
         </div>
         <DottedSeparator className="my-4"/>
+          {/* DataFilter establece con nuqs el estado de status y lo refleja en la url */}
           <DataFilters />
         <DottedSeparator className="my-4"/>
         {isLoadingTasks ? (
