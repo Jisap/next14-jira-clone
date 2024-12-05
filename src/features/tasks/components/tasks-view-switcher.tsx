@@ -14,7 +14,7 @@ import { useQueryState } from "nuqs"
 
 export const TasksViewSwitcher = () => {
 
-  const [view, setView] = useQueryState("tasksView", {
+  const [view, setView] = useQueryState("tasksView", { // Establece en la url el valor de view, la cual viene del valor seleccionado en Tabs
     defaultValue: "table",
   })
   const workspaceId = useWorkspaceId()
