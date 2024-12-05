@@ -9,6 +9,7 @@ import { useCreateTaskModal } from "../hooks/use-create-taks-modal"
 import { useGetTasks } from '../api/use-get-task';
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id"
 import { useQueryState } from "nuqs"
+import { DataFilters } from "./data-filters"
 
 
 
@@ -59,13 +60,13 @@ export const TasksViewSwitcher = () => {
           </Button>
         </div>
         <DottedSeparator className="my-4"/>
-        Data filters
+          <DataFilters />
         <DottedSeparator className="my-4"/>
         {isLoadingTasks ? (
           <div className="w-full border rounded-lg h-[200px] flex flex-col items-center justify-center">
             <Loader className="size-5 animate-spin text-muted-foreground" />
           </div>
-        ): (
+        ):(
           <>
             <TabsContent value="table" className="mt-0">
               {JSON.stringify(tasks)}
