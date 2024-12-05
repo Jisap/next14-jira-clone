@@ -42,8 +42,8 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
   });
 
   const onSubmmit = (values: z.infer<typeof createTaskSchema>) => {           // El submit recibe los values del form y se valida con el esquema  
-    mutate({ json: { ...values, workspaceId } }, {                             // Se envia el objeto a la mutation
-      onSuccess: ({ data }) => {                                                // Si se obtuvo la data de la mutation
+    mutate({ json: { ...values, workspaceId } }, {                            // Se envia el objeto a la mutation
+      onSuccess: ({ data }) => {                                              // Si se obtuvo la data de la mutation
         form.reset();
         onCancel?.()
       }
