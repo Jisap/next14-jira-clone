@@ -6,11 +6,15 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TabsContent } from "@radix-ui/react-tabs"
 import { PlusIcon } from "lucide-react"
 import { useCreateTaskModal } from "../hooks/use-create-taks-modal"
+import { useGetTasks } from '../api/use-get-task';
+import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id"
 
 
 
 export const TasksViewSwitcher = () => {
 
+  const workspaceId = useWorkspaceId()
+  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({ workspaceId })
   const { open } = useCreateTaskModal();
 
   return (
@@ -51,7 +55,7 @@ export const TasksViewSwitcher = () => {
         <DottedSeparator className="my-4"/>
         <>
           <TabsContent value="table" className="mt-0">
-            Data Table
+            {JSON.stringify(tasks)}
           </TabsContent>
           <TabsContent value="kanban" className="mt-0">
             Data Kamban
