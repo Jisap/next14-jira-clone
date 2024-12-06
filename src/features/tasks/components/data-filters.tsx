@@ -11,7 +11,7 @@ import {
   SelectSeparator, 
   SelectTrigger, 
   SelectValue } from "@/components/ui/select";
-import { ListChecksIcon, UserIcon } from "lucide-react";
+import { FolderIcon, ListChecksIcon, UserIcon } from "lucide-react";
 import { TaskStatus } from "../types";
 import { useTaksFilters } from "../hooks/use-taks-filters";
 
@@ -110,7 +110,7 @@ export const DataFilters = ({ hideProjectFilter}: DataFiltersProps) => {
       >
         <SelectTrigger className="w-full lg:w-auto h-8">
           <div className="flex items-center pr-2">
-            <UserIcon className="size-4 mr-2" />
+            <FolderIcon className="size-4 mr-2" />
             <SelectValue placeholder="All projects" />
           </div>
         </SelectTrigger>
