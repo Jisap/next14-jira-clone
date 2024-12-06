@@ -1,7 +1,13 @@
 "use client"
 
 
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
 import { Task } from "../types";
 
 export const columns: ColumnDef<Task>[] =  [
