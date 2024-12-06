@@ -11,7 +11,7 @@ import {
   SelectSeparator, 
   SelectTrigger, 
   SelectValue } from "@/components/ui/select";
-import { ListChecksIcon } from "lucide-react";
+import { ListChecksIcon, UserIcon } from "lucide-react";
 import { TaskStatus } from "../types";
 import { useTaksFilters } from "../hooks/use-taks-filters";
 
@@ -49,10 +49,19 @@ export const DataFilters = ({ hideProjectFilter}: DataFiltersProps) => {
     setFilters({ status: value === "all" ? null : value as TaskStatus}) // Establece el estado de status en (filters) y se refleja en la url
   }
 
+  const onAssigneeChange = (value: string) => {
+    setFilters({ assigneeId: value === "all" ? null : value as string }) // Establece el estado de assigneeId en (filters) y se refleja en la url
+  }
+
+  const onProjectChange = (value: string) => {
+    setFilters({ projectId: value === "all" ? null : value as string }) // Establece el estado de projectId en (filters) y se refleja en la url
+  }
+
   if(isLoading) return null;
 
   return (
     <div className="flex flex-col lg:flex-row gap-2">
+      {/* Status filter */}
       <Select
         defaultValue={status ?? undefined}
         onValueChange={(value) => onStatusChange(value)}
@@ -71,6 +80,27 @@ export const DataFilters = ({ hideProjectFilter}: DataFiltersProps) => {
           <SelectItem value={TaskStatus.IN_REVIEW}>In Review</SelectItem>
           <SelectItem value={TaskStatus.TODO}>Todo</SelectItem>
           <SelectItem value={TaskStatus.DONE}>Done</SelectItem>
+        </SelectContent>
+      </Select>
+      {/* Assignee filter */}
+      <Select
+        defaultValue={assigneeId ?? undefined}
+        onValueChange={(value) => onAssigneeChange(value)}
+      >
+        <SelectTrigger className="w-full lg:w-auto h-8">
+          <div className="flex items-center pr-2">
+            <UserIcon className="size-4 mr-2" />
+            <SelectValue placeholder="All assignees" />
+          </div>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All assginees</SelectItem>
+          <SelectSeparator />
+          {memberOptions?.map((member) => (
+            <SelectItem key={member.value} value={member.value}>
+              {member.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
