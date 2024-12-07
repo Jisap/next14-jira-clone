@@ -3,48 +3,21 @@ import { useQuery } from "@tanstack/react-query";
 import { TaskStatus } from "../types";
 
 
-interface UseGetTasksProps {
-  workspaceId: string;
-  projectId?: string | null;
-  status?: TaskStatus | null;
-  search?: string | null;
-  assigneeId?: string | null;
-  dueDate?: string | null;
+interface UseGetTaskProps {
+  taskId: string;
 }
 
-export const useGetTasks = ({ 
-  workspaceId,
-  projectId,
-  status,
-  search,
-  assigneeId,
-  dueDate
-}: UseGetTasksProps) => {
+export const useGetTask = ({ 
+  taskId,
+}: UseGetTaskProps) => {
 
   const query = useQuery({
-    queryKey: [
-      "tasks",
-      workspaceId,
-      projectId,
-      status,
-      search,
-      assigneeId,
-      dueDate
-    ],
+    queryKey: ["task", taskId],
     queryFn: async () => {
-      const response = await client.api.tasks.$get({ // Consulta a la api de tasks para unos parámetros que se pasan en la query
-        query: { 
-          workspaceId,
-          projectId: projectId ?? undefined,
-          status: status ?? undefined,
-          search: search ?? undefined,
-          assigneeId: assigneeId ?? undefined,
-          dueDate: dueDate ?? undefined,
-        }
-      })
+      const response = await client.api.tasks[":taskId"].$get({ param: { taskId } }); 
 
       if (!response.ok) {           
-        throw new Error("Failed to fetch tasks");
+        throw new Error("Failed to fetch task");
       }
 
       const { data } = await response.json()

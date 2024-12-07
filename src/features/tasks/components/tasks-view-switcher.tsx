@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TabsContent } from "@radix-ui/react-tabs"
 import { Loader, PlusIcon } from "lucide-react"
 import { useCreateTaskModal } from "../hooks/use-create-taks-modal"
-import { useGetTasks } from '../api/use-get-task';
+import { useGetTasks } from '../api/use-get-tasks';
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id"
 import { useQueryState } from "nuqs"
 import { DataFilters } from "./data-filters"

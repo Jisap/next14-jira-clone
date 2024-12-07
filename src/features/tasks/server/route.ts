@@ -275,6 +275,60 @@ const app = new Hono()
       return c.json({ data: task });
     }
   )
+  .get(
+    "/:taskId",                                                                                                      // Ruta de la petición con el parámetro taskId
+    sessionMiddleware,                                                                                               // Verificamos si el usuario está autenticado
+    async (c, next) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
+      const currentUser = c.get("user");                                                                             // Obtenemos el usuario autenticado
+      const databases = c.get("databases");                                                                          // Base de datos de appWrite
+      const { taskId } = c.req.param();                                                                              // Parámetros de la consulta taskId
+      const { users } = await createAdminClient();                                                                   // Users registrados en appWrite
+
+      const task = await databases.getDocument<Task>(                                                                // Obtenemos la tarea que corresponde al id del parámetro
+        DATABASE_ID,
+        TASKS_ID,
+        taskId
+      );
+
+      const currentMember = await getMember({                                                                        // Obtenemos el usuario asociado a la tarea existente en el workspace
+        databases,
+        workspaceId: task.workspaceId,
+        userId: currentUser.$id,
+      });
+
+      if(!currentMember){
+        return c.json({ error: "Unauthorized" }, 401);                                                               // Validamos que el usuario pertenezca al workspace y a la tarea
+      }
+
+      const project = await databases.getDocument<Project>(                                                          // Obtenemos el proyecto asociado a la tarea del parámetro
+        DATABASE_ID,
+        PROJECTS_ID,
+        task.projectId
+      );
+
+      const member = await databases.getDocument(                                                                    // Obtenemos el miembro asignado a la tarea 
+        DATABASE_ID,
+        MEMBERS_ID,
+        task.assigneeId,
+      );
+
+      const user = await users.get(member.userId)                                                                    // Obtenemos el usuario asociado al miembro asignado a la tarea
+
+      const assignee = {                                                                                             // Obtenemos el assignne en base al miembro asignado a la tarea con los detalles de su usuario
+        ...member,
+        name: user.name,
+        email: user.email
+      }
+
+      return c.json({                                                                                                // Se retorna el task con los detalles de su proyecto y su miembro asignado.
+        data: {
+          ...task,
+          project,
+          assignee
+        }
+      })
+    }
+  )
 
 
 
