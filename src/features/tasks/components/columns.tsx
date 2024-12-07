@@ -8,7 +8,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { ArrowUpDown, MoreVertical } from "lucide-react"
 import { Task } from "../types";
 import { Button } from "@/components/ui/button";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
@@ -16,6 +16,7 @@ import { MemberAvatar } from "@/features/members/components/member-avatar";
 import { TaskDate } from "./taskDate";
 import { Badge } from "@/components/ui/badge";
 import { snakeCaseToTitleCase } from "@/lib/utils";
+import { TaskActions } from "./task-actions";
 
 export const columns: ColumnDef<Task>[] =  [
   {
@@ -138,5 +139,19 @@ export const columns: ColumnDef<Task>[] =  [
       )
     }
   },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const id = row.original.$id;
+      const projectId = row.original.project.$id;
+      return (
+        <TaskActions id={id} projectId={projectId}>
+          <Button variant="ghost" className="size-8 p-0">
+            <MoreVertical />
+          </Button>
+        </TaskActions>
+      )
+    }
+  }
 ]
 
