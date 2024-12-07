@@ -228,7 +228,7 @@ const app = new Hono()
       taskId
     )
 
-    return c.json({ data: taskId });                                                                               // Se retorna el id de la tarea eliminada
+    return c.json({ data: { $id: task.$id } });                                                                               // Se retorna el id de la tarea eliminada
   }
  )
 
