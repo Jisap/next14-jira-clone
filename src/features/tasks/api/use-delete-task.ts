@@ -24,7 +24,7 @@ export const useDeleteTask = () => {                 // Hook para manejar una mu
       
       if (!response.ok) throw new Error("Failed to delete task");
 
-      return response.json()                                                // retorna el json de la respuesta    
+      return response.json()                                                    // retorna el json de la respuesta    
     },
     onSuccess: ({ data }) => {
       toast.success("Task deleted successfully");

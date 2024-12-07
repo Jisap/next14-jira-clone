@@ -35,7 +35,7 @@ export const useConfirm = (
 
   const ConfirmationDialog = () => (
     <ResponsiveModal
-      open={promise !== null}
+      open={promise !== null} // El modal se abre cuando la promesa se establece en true proveniente de la fn onDelete de cada componente
       onOpenChange={handleClose}
     >
       <Card className="w.full h-full border-none shadow-slate-200">
