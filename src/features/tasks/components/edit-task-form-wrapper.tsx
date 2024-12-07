@@ -5,6 +5,7 @@ import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id";
 import { Loader } from "lucide-react";
 import { CreateTaskForm } from "./create-task-form";
 import { useGetTask } from "../api/use-get-task";
+import { EditTaskForm } from "./edit-task-form";
 
 
 interface EditTaskFormWrapperProps {
@@ -51,8 +52,9 @@ export const EditTaskFormWrapper = ( {
 
 
   return (
-    <CreateTaskForm 
+    <EditTaskForm
       onCancel={onCancel}
+      initialValues={initialValues}
       projectOptions={projectOptions ?? []}
       memberOptions={memberOptions ?? []}
     />
