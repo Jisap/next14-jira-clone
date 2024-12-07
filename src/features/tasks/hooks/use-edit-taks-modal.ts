@@ -1,22 +1,20 @@
 
 
-import { useQueryState, parseAsBoolean } from "nuqs";
+import { useQueryState, parseAsBoolean, parseAsString } from "nuqs";
 
 export const useEditTaskModal = () => { // Estado que modifica el estado de isOpen y maneja el parámetro de la URL.
-  const [ isOpen, setIsOpen ] = useQueryState( 
-    "edit-task",                              // El nombre del parámetro en la URL
-    parseAsBoolean                                 // Define cómo interpretar el valor del parámetro y qué hacer con los valores predeterminados.
-      .withDefault(false)                          // Si createProjectModalOpen no está o tiene un valor predeterminado, isOpen será false. 
-      .withOptions({ clearOnDefault: true })       // Si createProjectModalOpen=true está en la URL, isOpen será true.
+  const [ taskId, setTaskid ] = useQueryState( 
+    "edit-task",                                   // El nombre del parámetro en la URL 
+    parseAsString,                                 // El parseAs se usa para convertir el valor de la URL a un string
   );
 
-  // Estas funciones actualizan el estado (isOpen) y, por extensión, el parámetro en la URL:
-  const open = () => setIsOpen(true);              // Llamar a open añade createProjectModalOpen=true a la URL.
-  const close = () => setIsOpen(false);            // Llamar a close elimina createProjectModalOpen=true a la URL. de la URL (porque false es el valor predeterminado).
+  // Estas funciones actualizan el estado (taskId) y, por extensión, el parámetro en la URL:
+  const open = (id:string) => setTaskid(id);      // Llamar a open añade edit-task=id a la URL. de la URL 
+  const close = () => setTaskid(null);            // Llamar a close elimina edit-task=id a la URL. de la URL 
 
   return {
-    isOpen, // El hook retorna el valor de isOpen, lo que permite que otros componentes puedan verificar si el modal está abierto o cerrado.
-    setIsOpen,
+    taskId, // El hook retorna el valor de isOpen, lo que permite que otros componentes puedan verificar si el modal está abierto o cerrado.
+    setTaskid,
     open,
     close,
   }
