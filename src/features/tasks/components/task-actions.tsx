@@ -6,6 +6,8 @@ import {
 import { ExternalLinkIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { useDeleteTask } from "../api/use-delete-task";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useRouter } from "next/navigation";
+import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id";
 
 
 interface TaskActionsProps {
@@ -16,6 +18,9 @@ interface TaskActionsProps {
 
 export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
   
+  const router = useRouter();
+  const workspaceId = useWorkspaceId();
+
   const [ConfirmDialog, confirm] = useConfirm(
     "Delete Task",
     "This action cannot be undone.",
@@ -29,6 +34,14 @@ export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
     if (ok) {                                  // Si el usuario confirma la acción
       mutate({ param: { taskId: id } });       // Ejecutamos la mutación de borrado
     }
+  };
+
+  const onOpenTask = () => {
+    router.push(`/workspaces/${workspaceId}/tasks/${id}`);
+  }
+
+  const onOpenProject = () => {
+    router.push(`/workspaces/${workspaceId}/projects/${projectId}`);
   }
 
   return (
@@ -47,14 +60,14 @@ export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
             Task Details
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => { }}
+            onClick={onOpenProject}
             className="font-medium p-[10px]"
           >
             <ExternalLinkIcon className="size-4 mr-2 stroke-2" />
             Open Project
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => { }}
+            onClick={onOpenTask}
             className="font-medium p-[10px]"
           >
             <PencilIcon className="size-4 mr-2 stroke-2" />
