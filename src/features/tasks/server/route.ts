@@ -197,7 +197,7 @@ const app = new Hono()
     return c.json({ data: task });
   }
  )
-.delete(
+  .delete(
   "/:taskId",                                                                                                      // Ruta de la petición con el parámetro taskId
   sessionMiddleware,                                                                                               // Verificamos si el usuario está autenticado
   async (c, next) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
@@ -230,7 +230,52 @@ const app = new Hono()
 
     return c.json({ data: { $id: task.$id } });                                                                               // Se retorna el id de la tarea eliminada
   }
- )
+  )
+  .patch(
+    "/:taskId",
+    sessionMiddleware,                                                                                               // Verificar si el usuario está autenticado
+    zValidator("json", createTaskSchema.partial()),                                                                  // Validar el body de la petición según el esquema
+    async (c, next) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
+
+      const user = c.get("user");
+      const databases = c.get("databases");
+      const { name, status, projectId, dueDate, assigneeId, description } = c.req.valid("json")
+      const { taskId } = c.req.param();                                                                              // Parámetros de la consulta
+
+      const existingTask = await databases.getDocument<Task>(                                                        // Obtenemos la tarea existente
+        DATABASE_ID,
+        TASKS_ID,
+        taskId,
+      )
+
+      const member = await getMember({                                                                               // Obtenemos el usuario asociado a la tarea existente en el workspace
+        databases,
+        workspaceId: existingTask.workspaceId,
+        userId: user.$id,
+      });
+
+      if (!member) {
+        return c.json({ error: "Unauthorized" }, 401);                                                               // Validamos que el usuario pertenezca al workspace
+      }
+
+      const task = await databases.updateDocument<Task>(                                                             // Se actualiza la tarea existente
+        DATABASE_ID,
+        TASKS_ID,
+        taskId,
+        {
+          name,
+          status,
+          projectId,
+          dueDate,
+          assigneeId,
+          description,
+        }
+      )
+
+      return c.json({ data: task });
+    }
+  )
+
 
 
 export default app;
