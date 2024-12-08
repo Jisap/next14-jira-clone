@@ -23,8 +23,8 @@ export const ResponsiveModal = ( {
   if(isDesktop){
     return (
       <Dialog 
-        open={open} 
-        onOpenChange={onOpenChange}
+        open={open}                 // Valor de isOpen 
+        onOpenChange={onOpenChange} // El componente Dialog permite usar setIsOpen sin argumentos para cambiar el valor de isOpen
       >
         <DialogContent className='w-full sm:max-w-lg p-0 border-none overflow-y-auto hide-scrollbar max-h-[85vh]'>
           {children}

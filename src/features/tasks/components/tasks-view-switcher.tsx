@@ -32,7 +32,7 @@ export const TasksViewSwitcher = () => {
   })
 
   const workspaceId = useWorkspaceId()
-  const { open } = useCreateTaskModal();
+  const { open } = useCreateTaskModal(); // open establece isOpen a true
 
   const { 
     data: tasks,
@@ -77,7 +77,7 @@ export const TasksViewSwitcher = () => {
           <Button
             size="sm"
             className="w-full lg:w-auto"
-            onClick={open}
+            onClick={open} // Al clickear isOpen se establece a true -> y <CreateTaskModal /> que está en el layout abre <ResponsiveModal /> 
           >
             <PlusIcon className="size-4 mr-2" />
             New Task

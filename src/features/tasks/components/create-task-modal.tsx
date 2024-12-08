@@ -6,12 +6,12 @@ import { CreateTaskFormWrapper } from "./create-task-form-wrapper";
 
 export const CreateTaskModal = () => {
 
-  const { isOpen,setIsOpen, close } = useCreateTaskModal();
+  const { isOpen, setIsOpen, close } = useCreateTaskModal(); // Estado de isOpen, fn que lo modifica y fn que cierra el modal
 
   return (
     <ResponsiveModal
-      open={isOpen}
-      onOpenChange={setIsOpen}
+      open={isOpen}             // 
+      onOpenChange={setIsOpen}  // Si se clickea se permite a ResponsiveModal cambiar el valor de isOpen
     >
       <CreateTaskFormWrapper onCancel={close} />
     </ResponsiveModal>
