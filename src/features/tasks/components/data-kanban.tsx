@@ -6,7 +6,8 @@ import {
   Draggable,
   DropResult
 } from "@hello-pangea/dnd"
-import { object } from "zod";
+import KanbanColumnHeader from "./KanbanColumnHeader";
+
 
 const boards: TaskStatus[] = [ // boards es un array de estados de tareas
   TaskStatus.BACKLOG,
@@ -48,8 +49,24 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
   })
 
   return (
-    <div>
-      Data Kanban
-    </div>
+    <DragDropContext
+      onDragEnd={() => {}}
+    >
+      <div className="flex overflow-x-auto">
+        {boards.map((board) => {
+          return (
+            <div 
+              key={board}
+              className="flex-1 mx-2 bg-muted p-1.5 rounded-md min-w-[200px]"
+            >
+              <KanbanColumnHeader 
+                board={board}
+                taskCount={tasks[board].length}
+              />
+            </div>
+          )
+        })}
+      </div>
+    </DragDropContext>
   )
 }
