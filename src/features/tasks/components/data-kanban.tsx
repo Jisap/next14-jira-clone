@@ -14,7 +14,7 @@ const boards: TaskStatus[] = [ // boards es un array de estados de tareas
   TaskStatus.TODO,
   TaskStatus.IN_PROGRESS,
   TaskStatus.IN_REVIEW,
-  TaskStatus.DONE,  
+  TaskStatus.DONE,
 ]
 
 type TaskState = {             // Estado de cada tarea
@@ -50,19 +50,46 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
 
   return (
     <DragDropContext
-      onDragEnd={() => {}}
+      onDragEnd={() => { }}
     >
       <div className="flex overflow-x-auto">
         {boards.map((board) => {
           return (
-            <div 
+            <div
               key={board}
               className="flex-1 mx-2 bg-muted p-1.5 rounded-md min-w-[200px]"
             >
-              <KanbanColumnHeader 
+              <KanbanColumnHeader
                 board={board}
                 taskCount={tasks[board].length}
               />
+              <Droppable droppableId={board}>
+                {(provided) => (                           // Provided es un objeto que la librería pasa a la función de renderizado de Droppable
+                  <div
+                    {...provided.droppableProps}           // Propiedades de área droppable. 
+                    ref={provided.innerRef}                // Referencia del contenedor
+                    className="min-h-[200px] py-1.5"
+                  >
+                    {tasks[board].map((task, index) => (   // Se iteran las tareas de cada estado
+                      <Draggable                           // Draggable es un componente que se usa para mover elementos
+                        key={task.$id}
+                        draggableId={task.$id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}          // Referencia del elemento arrastrable
+                            {...provided.draggableProps}     // Propiedades de área arrastrable
+                            {...provided.dragHandleProps}    // Propiedades del área de agarre
+                          >
+                            {task.name}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  </div>
+                )}
+              </Droppable>
             </div>
           )
         })}
