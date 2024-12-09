@@ -7,6 +7,7 @@ import {
   DropResult
 } from "@hello-pangea/dnd"
 import KanbanColumnHeader from "./KanbanColumnHeader";
+import { KanbanCard } from "./kanban-card";
 
 
 const boards: TaskStatus[] = [ // boards es un array de estados de tareas
@@ -82,7 +83,7 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
                             {...provided.draggableProps}     // Propiedades de área arrastrable
                             {...provided.dragHandleProps}    // Propiedades del área de agarre
                           >
-                            {task.name}
+                            <KanbanCard task={task} />
                           </div>
                         )}
                       </Draggable>
