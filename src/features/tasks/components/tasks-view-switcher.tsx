@@ -16,6 +16,7 @@ import { columns } from './columns';
 import { DataKanban } from "./data-kanban"
 import { TaskStatus } from '../types';
 import { useCallback } from "react"
+import { useBulkUpdateTasks } from "../api/use-bulk-update-tasks"
 
 
 
@@ -36,6 +37,8 @@ export const TasksViewSwitcher = () => {
   const workspaceId = useWorkspaceId()
   const { open } = useCreateTaskModal(); // open establece isOpen a true
 
+  const { mutate: bulkUpdate } = useBulkUpdateTasks();
+
   const { 
     data: tasks,
      isLoading: isLoadingTasks 
@@ -48,8 +51,10 @@ export const TasksViewSwitcher = () => {
   });
 
   const onKambanChange = useCallback((tasks: {$id:string; status:TaskStatus; position:number}[]) => {
-    console.log({tasks})
-  },[])
+    bulkUpdate({
+      json: { tasks }
+    })
+  },[bulkUpdate])
 
 
   return (
