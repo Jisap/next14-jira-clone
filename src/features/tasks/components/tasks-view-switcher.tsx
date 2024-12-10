@@ -50,7 +50,9 @@ export const TasksViewSwitcher = () => {
     dueDate,
   });
 
-  const onKambanChange = useCallback((tasks: {$id:string; status:TaskStatus; position:number}[]) => {
+  const onKambanChange = useCallback((
+    tasks: {$id:string; status:TaskStatus; position:number}[]
+  ) => {
     bulkUpdate({
       json: { tasks }
     })

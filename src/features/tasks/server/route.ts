@@ -352,7 +352,7 @@ const app = new Hono()
       const taskToUpdate = await databases.listDocuments(                                                           // Se obtienen las tareas que se van a actualizar
         DATABASE_ID,
         TASKS_ID,
-        [Query.contains("id", tasks.map((task) => task.$id))]
+        [Query.contains("$id", tasks.map((task) => task.$id))]
       );
 
       const workspaceIds = new Set(taskToUpdate.documents.map((task) => task.workspaceId));                         // Se obtienen los ids de los workspaces de las tareas que se van a actualizar. Set elimina duplicados y devuelve un conjunto único de resultados
