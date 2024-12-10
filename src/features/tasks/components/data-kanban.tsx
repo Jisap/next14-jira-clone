@@ -45,16 +45,36 @@ export const DataKanban = ({ data, onChange }: DataKanbanProps) => { // Se recib
       [TaskStatus.DONE]: [],
     };
 
-    data.forEach((task) => {                                                          // Se recorren las tareas y
-      initialTasks[task.status].push(task);                                           // se agregan en initialTasks, las tareas a cada estado
+    data.forEach((task) => {                                                         // Se recorren las tareas y
+      initialTasks[task.status].push(task);                                          // se agregan en initialTasks, las tareas a cada estado
     })
 
-    Object.keys(initialTasks).forEach((status) => {                                   // Se obtienen las claves del objeto initialTasks (status) y
-      initialTasks[status as TaskStatus].sort((a, b) => a.position - b.position)      // se ordenan las tareas por posición
+    Object.keys(initialTasks).forEach((status) => {                                  // Se obtienen las claves del objeto initialTasks (status) y
+      initialTasks[status as TaskStatus].sort((a, b) => a.position - b.position)     // se ordenan las tareas por posición
     })
 
-    return initialTasks;                                                              // Al final el estado de Tasks se establece con initialTasks
+    return initialTasks;                                                             // Al final el estado de Tasks se establece con initialTasks
   });
+
+  useEffect(() => {                                                                  // Reinicialización del estado de tareas cuando cambian los datos de entrada (edit, delete, post de tareas)
+    const newTasks: TaskState = {
+      [TaskStatus.BACKLOG]: [],
+      [TaskStatus.TODO]: [],
+      [TaskStatus.IN_PROGRESS]: [],
+      [TaskStatus.IN_REVIEW]: [],
+      [TaskStatus.DONE]: [],
+    };
+
+    data.forEach((task) => {                                                          // Se recorren las tareas y
+      newTasks[task.status].push(task);                                               // se agregan en initialTasks, las tareas a cada estado
+    })
+
+    Object.keys(newTasks).forEach((status) => {                                       // Se obtienen las claves del objeto initialTasks (status) y
+      newTasks[status as TaskStatus].sort((a, b) => a.position - b.position)          // se ordenan las tareas por posición
+    })
+
+    setTasks(newTasks);                                                               // Al final el estado de Tasks se establece con initialTasks
+  }, [data])
 
   const onDragEnd = useCallback((result: DropResult) => {                             // Esta función se ejecutará cuando se termine el arrastre y dará un resultado
     if (!result.destination) return;                                                  // Si no hay destino, no se hace nada
@@ -127,25 +147,7 @@ export const DataKanban = ({ data, onChange }: DataKanbanProps) => { // Se recib
       return newTasks; // Devuelve las tareas actualizadas
     });
 
-    useEffect(() => {                                                                 // Reinicialización del estado de tareas cuando cambian los datos de entrada (edit, delete, post de tareas)
-      const newTasks: TaskState = {      
-        [TaskStatus.BACKLOG]: [],
-        [TaskStatus.TODO]: [],
-        [TaskStatus.IN_PROGRESS]: [],
-        [TaskStatus.IN_REVIEW]: [],
-        [TaskStatus.DONE]: [],
-      };
-
-      data.forEach((task) => {                                                          // Se recorren las tareas y
-        newTasks[task.status].push(task);                                               // se agregan en initialTasks, las tareas a cada estado
-      })
-
-      Object.keys(newTasks).forEach((status) => {                                       // Se obtienen las claves del objeto initialTasks (status) y
-        newTasks[status as TaskStatus].sort((a, b) => a.position - b.position)          // se ordenan las tareas por posición
-      })
-
-      setTasks(newTasks);                                                             // Al final el estado de Tasks se establece con initialTasks
-    },[data])
+    
 
     onChange(updatesPayload)
   },[onChange])
