@@ -329,6 +329,66 @@ const app = new Hono()
       })
     }
   )
+  .post(
+    "/bulk-update",                                                                                                 // Esta ruta se utiliza para actualizar mas de un task a la vez. 
+    sessionMiddleware,                                                                                              // Verificamos si el usuario está autenticado
+    zValidator(                                                                                                     // Se recibe el body de las actualizaciones
+      "json",
+      z.object({                                                                                                    // validado con zod según el esquema propuesto
+        tasks: z.array(
+          z.object({
+            $id: z.string(),
+            status: z.nativeEnum(TaskStatus),
+            position: z.number().int().positive().min(1000).max(1_000_000)
+          })
+        )
+      })   
+    ),
+    async (c, next) => {
+      const databases = c.get("databases");                                                                         // Base de datos de appWrite
+      const user = c.get("user");                                                                                   // Usuario autenticado
+      const { tasks } = await c.req.valid("json");                                                                  // Parámetros de la consulta validados con Zod
+
+      const taskToUpdate = await databases.listDocuments(                                                           // Se obtienen las tareas que se van a actualizar
+        DATABASE_ID,
+        TASKS_ID,
+        [Query.contains("id", tasks.map((task) => task.$id))]
+      );
+
+      const workspaceIds = new Set(taskToUpdate.documents.map((task) => task.workspaceId));                         // Se obtienen los ids de los workspaces de las tareas que se van a actualizar. Set elimina duplicados y devuelve un conjunto único de resultados
+      if(workspaceIds.size !== 1){                                                                                  // Si workspaceIds > 1 significa que las tareas pertenecen a varios workspace y eso no se permite en este endpoint  
+        return c.json({ error: "All tasks must belong to the same workspace" }, 400);                               // Se devuelve un error con el mensaje.
+      }
+    
+      const workspaceId = workspaceIds                                                                              // Si todas las tareas pertenecen al mismo workspace (es decir, workspaceIds.size === 1), se extrae el único valor del conjunto para usarlo más adelante
+        .values()       // Devuelve un iterador de los elementos del conjunto.
+        .next().value;  // Obtiene el primer (y único) valor del iterador.                                                     
+    
+      const member = await getMember({                                                                              // Se obtiene el miembro del workspace que se está actualizando.
+        databases,
+        workspaceId,
+        userId: user.$id
+      })
+
+      if (!member) {                                                                                                // se verifica si el usuario autenticado pertenece al workspace
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const updatedTasks = await Promise.all(                                                                       // Se actualizan las tareas seleccionadas.
+        tasks.map(async (task) => {
+          const { $id, status, position } = task;
+          return databases.updateDocument<Task>(
+            DATABASE_ID,
+            TASKS_ID,
+            $id,
+            { status, position }
+          )
+        })
+      );
+
+      return c.json({ data: updatedTasks })
+    }
+  )
 
 
 
