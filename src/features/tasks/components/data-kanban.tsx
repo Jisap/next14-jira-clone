@@ -76,7 +76,7 @@ export const DataKanban = ({ data, onChange }: DataKanbanProps) => { // Se recib
     setTasks(newTasks);                                                               // Al final el estado de Tasks se establece con initialTasks
   }, [data])
 
-  const onDragEnd = useCallback((result: DropResult) => {                             // Esta función se ejecutará cuando se termine el arrastre y dará un resultado
+  const onDragEnd = useCallback((result: DropResult) => {                            // Esta función se ejecutará cuando se termine el arrastre y dará un resultado
     if (!result.destination) return;                                                  // Si no hay destino, no se hace nada
 
     
