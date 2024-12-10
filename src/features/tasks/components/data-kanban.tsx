@@ -4,7 +4,7 @@ import {
   DragDropContext,
   Droppable,
   Draggable,
-  DropResult
+  type DropResult
 } from "@hello-pangea/dnd"
 import KanbanColumnHeader from "./KanbanColumnHeader";
 import { KanbanCard } from "./kanban-card";
@@ -26,11 +26,11 @@ interface DataKanbanProps {
   data: Task[];
 }
 
-export const DataKanban = ({ data }: DataKanbanProps) => {
+export const DataKanban = ({ data }: DataKanbanProps) => { // Se reciben todas las tasks según status
 
-  const [tasks, setTasks] = useState<TaskState>(() => { // Estado de las tareas tipo TaskState (status: Task[])
+  const [tasks, setTasks] = useState<TaskState>(() => {    // Estado de las tareas tipo TaskState (status: Task[])
 
-    const initialTasks: TaskState = { // Objeto con las tareas de cada estado. Se inicializa con un array vacio
+    const initialTasks: TaskState = {      // Objeto con las tareas de cada estado. Se inicializa con un array vacio
       [TaskStatus.BACKLOG]: [],
       [TaskStatus.TODO]: [],
       [TaskStatus.IN_PROGRESS]: [],
@@ -38,20 +38,93 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
       [TaskStatus.DONE]: [],
     };
 
-    data.forEach((task) => {                // En los argumentos de la funcion se pasan los datos de las tareas
-      initialTasks[task.status].push(task); // Se agregan las tareas a cada estado
+    data.forEach((task) => {                                                          // Se recorren las tareas y
+      initialTasks[task.status].push(task);                                           // se agregan en initialTasks, las tareas a cada estado
     })
 
-    Object.keys(initialTasks).forEach((status) => {                                // Se obtienen las claves del objeto initialTasks(status)
-      initialTasks[status as TaskStatus].sort((a, b) => a.position - b.position)   // Se ordenan las tareas por posición
+    Object.keys(initialTasks).forEach((status) => {                                   // Se obtienen las claves del objeto initialTasks (status) y
+      initialTasks[status as TaskStatus].sort((a, b) => a.position - b.position)      // se ordenan las tareas por posición
     })
 
-    return initialTasks;
-  })
+    return initialTasks;                                                              // Al final el estado de Tasks se establece con initialTasks
+  });
+
+  const onDragEnd = useCallback((result: DropResult) => {                             // Esta función se ejecutará cuando se termine el arrastre y dará un resultado
+    if (!result.destination) return;                                                  // Si no hay destino, no se hace nada
+
+    
+    const { source, destination } = result;                                           // Extraemos información de origen y destino del arrastre                 
+    const sourceStatus = source.droppableId as TaskStatus;                            // Status de origen
+    const destStatus = destination.droppableId as TaskStatus;                         // Status de destino  
+
+    let updatesPayload: { $id: string; status: TaskStatus; position: number }[] = []; // Arreglo para almacenar las actualizaciones de tareas
+
+    setTasks((prevTasks) => {                                                         // Actualización del estado de las tareas, para ello...
+
+      const newTasks = { ...prevTasks };                                              // se crear una copia del estado anterior de tareas
+
+      const sourceColumn = [...newTasks[sourceStatus]];                               // Obtenemos la columna de origen 
+      const [movedTask] = sourceColumn.splice(source.index, 1);                       // y de ella eliminamos la tarea movida (source.index). [movedTask]   
+
+      if(!movedTask) {
+        console.error("No task found at the source index");                           // Se Valida que la tarea existe
+        return prevTasks;
+      }
+
+      const updatedMovedTasks = sourceStatus !== destStatus                           // Si el status de origen es distinto del de destino 
+        ? { ...movedTask, status: destStatus }                                        // Se actualiza el status de movedTask. ( updatedMovedTasks )
+        : movedTask                                                                   // sino se deja como estaba
+
+      newTasks[sourceStatus] = sourceColumn;                                          // Estado de tareas según status se actualiza con tareas de origen menos tarea movida (splice borro tarea)
+
+      const destColumn = [...newTasks[destStatus]];                                   // Obtenemos la columna de destino 
+      destColumn.splice(destination.index, 0, updatedMovedTasks);                     // e insertamos la tarea/s movida/s (destColumn)
+      newTasks[destStatus] = destColumn;                                              // Estado de tareas según status se actualiza con destColumn (splice agrego tareas movidas)
+
+      updatesPayload = []                                                             // Payload de actualizaciones de tareas
+
+      updatesPayload.push({                                                           // Agregamos la tarea movida al payload de actualizaciones
+        $id: updatedMovedTasks.$id,
+        status: destStatus,
+        position: Math.min((destination.index + 1) * 1000, 1_000_000)
+      })
+
+      newTasks[destStatus].forEach((task, index) => {                                // Recalcular posiciones de tareas en la columna de destino
+        if (task && task.$id !== updatedMovedTasks.$id) {                            // recorre todas las tareas de la columna de destino si la tarea existe y no es la que se acaba de mover
+          const newPosition = Math.min((index + 1) * 1000, 1_000_000);               // Se calcula la nueva posición basada en el nuevo índice
+          if (task.position !== newPosition) {                                       // Compara si la posición actual es diferente de la nueva
+            updatesPayload.push({                                                    // Si es diferente, agrega al updatesPayload para actualizar
+              $id: task.$id,
+              status: destStatus,
+              position: newPosition
+            })
+          }
+        }
+      });
+
+      if (sourceStatus !== destStatus) {                                             // Si la tarea cambia de columna, recalcular posiciones en la columna de origen
+        newTasks[sourceStatus].forEach((task, index) => {                            // Recorre las tareas de la columna de origen
+          if(task){
+            const newPosition = Math.min((index + 1) * 1000, 1_000_000);             // Calcula una nueva posición basada en su índice actual
+            if (task.position !== newPosition) {                                     // Compara la posición actual con la nueva posición
+              updatesPayload.push({                                                  // Si son diferentes, agrega al updatesPayload
+                $id: task.$id,
+                status: sourceStatus,
+                position: newPosition
+              })
+            }
+          }
+        })
+      }
+
+      return newTasks; // Devuelve las tareas actualizadas
+    })
+
+  },[])
 
   return (
     <DragDropContext
-      onDragEnd={() => { }}
+      onDragEnd={onDragEnd}
     >
       <div className="flex overflow-x-auto">
         {boards.map((board) => {
@@ -88,6 +161,7 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
                         )}
                       </Draggable>
                     ))}
+                    {provided.placeholder}
                   </div>
                 )}
               </Droppable>
