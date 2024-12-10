@@ -24,9 +24,16 @@ type TaskState = {             // Estado de cada tarea
 
 interface DataKanbanProps {
   data: Task[];
+  onChange: (
+    tasks: {
+      $id:string;
+      status: TaskStatus; 
+      position:number;
+    }[]
+  ) => void;
 }
 
-export const DataKanban = ({ data }: DataKanbanProps) => { // Se reciben todas las tasks según status
+export const DataKanban = ({ data, onChange }: DataKanbanProps) => { // Se reciben todas las tasks según status
 
   const [tasks, setTasks] = useState<TaskState>(() => {    // Estado de las tareas tipo TaskState (status: Task[])
 
@@ -118,9 +125,30 @@ export const DataKanban = ({ data }: DataKanbanProps) => { // Se reciben todas l
       }
 
       return newTasks; // Devuelve las tareas actualizadas
-    })
+    });
 
-  },[])
+    useEffect(() => {                                                                 // Reinicialización del estado de tareas cuando cambian los datos de entrada (edit, delete, post de tareas)
+      const newTasks: TaskState = {      
+        [TaskStatus.BACKLOG]: [],
+        [TaskStatus.TODO]: [],
+        [TaskStatus.IN_PROGRESS]: [],
+        [TaskStatus.IN_REVIEW]: [],
+        [TaskStatus.DONE]: [],
+      };
+
+      data.forEach((task) => {                                                          // Se recorren las tareas y
+        newTasks[task.status].push(task);                                               // se agregan en initialTasks, las tareas a cada estado
+      })
+
+      Object.keys(newTasks).forEach((status) => {                                       // Se obtienen las claves del objeto initialTasks (status) y
+        newTasks[status as TaskStatus].sort((a, b) => a.position - b.position)          // se ordenan las tareas por posición
+      })
+
+      setTasks(newTasks);                                                             // Al final el estado de Tasks se establece con initialTasks
+    },[data])
+
+    onChange(updatesPayload)
+  },[onChange])
 
   return (
     <DragDropContext
