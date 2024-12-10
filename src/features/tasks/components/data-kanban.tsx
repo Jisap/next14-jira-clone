@@ -35,7 +35,7 @@ interface DataKanbanProps {
 
 export const DataKanban = ({ data, onChange }: DataKanbanProps) => { // Se reciben todas las tasks según status
 
-  const [tasks, setTasks] = useState<TaskState>(() => {    // Estado de las tareas tipo TaskState (status: Task[])
+  const [tasks, setTasks] = useState<TaskState>(() => {                              // Estado de las tareas tipo TaskState (status: Task[])
 
     const initialTasks: TaskState = {      // Objeto con las tareas de cada estado. Se inicializa con un array vacio
       [TaskStatus.BACKLOG]: [],
@@ -148,7 +148,6 @@ export const DataKanban = ({ data, onChange }: DataKanbanProps) => { // Se recib
     });
 
     
-
     onChange(updatesPayload)
   },[onChange])
 
