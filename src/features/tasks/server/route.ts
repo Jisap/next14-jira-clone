@@ -8,7 +8,7 @@ import { ID, Query } from "node-appwrite";
 import { z } from "zod";
 import { Task, TaskStatus } from "../types";
 import { createAdminClient } from "@/lib/appwrite";
-import projects from '@/features/projects/server/route';
+
 import { Project } from "@/features/projects/types";
 
 
