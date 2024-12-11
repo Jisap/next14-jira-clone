@@ -12,6 +12,7 @@ import { enUS } from "date-fns/locale";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./data-calendar.css"
+import { EventCard } from "./event-card";
 
 const locales = { //  Mapa de localizaciones, en este caso para el idioma inglés.
   "en-US": enUS
@@ -68,6 +69,17 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
       max={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
       formats={{
         weekdayFormat: (date, culture, localizer) => localizer?.format(date, "EEE", culture) ?? "",
+      }}
+      components={{
+        eventWrapper: ({ event }) => (
+          <EventCard 
+            id={event.id}
+            title={event.title}
+            project={event.project}
+            assignee={event.assignee}
+            status={event.status}
+          />
+        )
       }}
     />
   )
