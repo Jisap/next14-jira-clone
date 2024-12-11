@@ -16,7 +16,7 @@ import { EventCard } from "./event-card";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
-const locales = { //  Mapa de localizaciones, en este caso para el idioma inglés.
+const locales = {                    //  Mapa de localizaciones, en este caso para el idioma inglés.
   "en-US": enUS
 }
 
