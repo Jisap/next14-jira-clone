@@ -1,0 +1,54 @@
+
+.rbc-header {
+  @apply text-sm;
+  @apply font-normal;
+  @apply pb-4;
+  @apply text-muted-foreground;
+  @apply border-b-0;
+}
+
+.rbc-header + .rbc-header {
+  @apply border-l-0;
+}
+
+.rbc-button-link {
+  @apply text-xs;
+  @apply font-normal;
+  @apply text-muted-foreground;
+}
+
+.rbc-month-row {
+  @apply min-h-[180px];
+  @apply border-t;
+  @apply border-x;
+}
+
+/* 
+  El selector completo selecciona únicamente el primer rbc-month-row de un grupo (aquellos que no son seguidos por otro rbc-month-row).
+  Es decir selecciona únicamente la primera fila del calendario del mes y le aplica un borde redondeado arriba.
+*/
+:not(.rbc-month-row ~ .rbc-month-row).rbc-month-row{
+  @apply rounded-t-md;
+}
+
+.rbc-month-row:last-of-type {
+  @apply border-b;
+  @apply rounded-b-md;
+}
+
+.rbc-month-view {
+  @apply border-none;
+}
+
+.rbc-date-cell {
+  @apply p-2;
+}
+
+.rbc-today {
+  background: inherit;
+}
+
+.rbc-off-range-bg {
+  background-color: inherit;
+}
+
