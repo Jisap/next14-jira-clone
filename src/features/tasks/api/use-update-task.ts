@@ -27,10 +27,10 @@ export const useUpdateTask = () => {                 // Hook para manejar una mu
     },
     onSuccess: ({ data }) => {
       toast.success("Task updated successfully");
-      window.location.reload();
-      //router.refresh()
+      //window.location.reload();
+      router.refresh()
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["tasks", data.taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task", data.$id] });
     },
     onError: (error) => {
       console.log({error});
