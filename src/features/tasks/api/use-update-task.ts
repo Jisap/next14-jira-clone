@@ -23,11 +23,12 @@ export const useUpdateTask = () => {                 // Hook para manejar una mu
       
       if (!response.ok) throw new Error("Failed to update task");
 
-      return response.json()                                                // retorna el json de la respuesta    
+      return response.json()                                                            // retorna el json de la respuesta    
     },
     onSuccess: ({ data }) => {
       toast.success("Task updated successfully");
-      router.refresh()
+      window.location.reload();
+      //router.refresh()
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["tasks", data.taskId] });
     },
