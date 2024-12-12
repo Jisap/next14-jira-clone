@@ -11,7 +11,7 @@ export const EditTaskModal = () => {
 
   return (
     <ResponsiveModal
-      open={!!taskId} // parámetro convertido a booleano
+      open={!!taskId} // parámetro convertido a booleano -> si se recibe se convierte a true y se renderiza el modal
       onOpenChange={close}
     >
       {taskId && (
