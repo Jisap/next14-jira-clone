@@ -19,9 +19,12 @@ import { useCallback } from "react"
 import { useBulkUpdateTasks } from "../api/use-bulk-update-tasks"
 import { DataCalendar } from "./data-calendar"
 
+interface TasksViewSwitcherProps {
+  hideProjectFilter?: boolean;
+}
 
 
-export const TasksViewSwitcher = () => {
+export const TasksViewSwitcher = ({ hideProjectFilter }: TasksViewSwitcherProps) => {
 
 
   const [{
@@ -99,7 +102,9 @@ export const TasksViewSwitcher = () => {
         </div>
         <DottedSeparator className="my-4"/>
           {/* DataFilter establece con nuqs el estado de status y lo refleja en la url */}
-          <DataFilters />
+          <DataFilters 
+            hideProjectFilter={hideProjectFilter}
+          />
         <DottedSeparator className="my-4"/>
         {isLoadingTasks ? (
           <div className="w-full border rounded-lg h-[200px] flex flex-col items-center justify-center">
