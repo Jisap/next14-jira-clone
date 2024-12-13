@@ -72,12 +72,14 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
     mutate({ 
       form: finalValues,
       param: { projectId: initialValues.$id },
-    }, {                                                                        // Se envia el objeto a la mutation
-      onSuccess: ({data}) => {                                                  // Si se obtuvo la data de la mutation se resetea el form
-        form.reset();
-        //router.push(`/workspaces/${data.$id}`)                                // Se redirige al nuevo workspace
-      }
-    });
+    }, 
+    // {                                                                           // Se envia el objeto a la mutation
+    //   onSuccess: ({data}) => {                                                  // Si se obtuvo la data de la mutation se resetea el form
+    //     form.reset();
+    //     //router.push(`/workspaces/${data.$id}`)                                // Se redirige al nuevo workspace
+    //   }
+    // }
+    );
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
