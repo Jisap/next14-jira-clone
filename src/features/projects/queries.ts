@@ -7,6 +7,8 @@ interface GetProjectProps {
   projectId: string;
 }
 
+// Con la refactorización de use-get-project no es necesaria esta función
+
 export const getProject = async ({ projectId }: GetProjectProps) => {        // Función para obtener un project
 
     const { account, databases } = await createSessionClient();                // Se crean instancias de cliente de appWrite
