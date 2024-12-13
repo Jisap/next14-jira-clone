@@ -11,7 +11,7 @@ type RequestType = InferRequestType<typeof client.api.projects[":projectId"]["$p
 
 export const useUpdateProject = () => {                 // Hook para manejar una mutación de creación de un project con tanstack
   
-  const router = useRouter()
+  //const router = useRouter()
   const queryClient = useQueryClient();
 
   const mutation = useMutation<
@@ -28,7 +28,7 @@ export const useUpdateProject = () => {                 // Hook para manejar una
     },
     onSuccess: ({ data }) => {
       toast.success("Project updated successfully");
-      router.refresh()
+      //router.refresh()
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["project", data.$id] });
     },
