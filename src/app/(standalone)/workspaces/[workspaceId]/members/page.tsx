@@ -12,8 +12,6 @@ const WorkspaceIdMembersPage = async() => {
     redirect("/login");
   }
 
-
-
   return (
     <div className="w-full lg:max-w-xl">
       <MembersList />

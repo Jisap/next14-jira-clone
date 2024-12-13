@@ -68,6 +68,27 @@ const app = new Hono()
       return c.json({ data: workspace });
     }
   )
+  .get(
+    "/:workspaceId/info",
+    sessionMiddleware,
+    async (c) => {
+      const databases = c.get("databases");
+      const { workspaceId } = c.req.param();
+
+      const workspace = await databases.getDocument<Workspace>(
+        DATABASE_ID,
+        WORKSPACE_ID,
+        workspaceId
+      );
+
+      return c.json({ 
+        data: {
+          $id: workspace.$id,
+          name: workspace.name,
+          imageUrl: workspace.imageUrl,
+      }});
+    }
+  )
   .post(                                                           // Endpoint para crear un nuevo workspace
     "/",
     zValidator("form", createWorkspaceSchema),                     // Se carga el eschema de validación de workspace
