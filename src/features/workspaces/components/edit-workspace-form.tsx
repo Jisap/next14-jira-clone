@@ -90,13 +90,14 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
     mutate({ 
       form: finalValues,
       param: { workspaceId: initialValues.$id },
-    }, {                                                                        // Se envia el objeto al mutation
-      onSuccess: ({data}) => {                                                  // Si se obtuvo la data de la mutation se resetea el form
-        form.reset();
-        //router.push(`/workspaces/${data.$id}`)                                // Se redirige al nuevo workspace
-      }
-    });
-  }
+    },
+    //  {                                                                        // Se envia el objeto al mutation
+    //   onSuccess: ({data}) => {                                                  // Si se obtuvo la data de la mutation se resetea el form
+    //     form.reset();
+    //     //router.push(`/workspaces/${data.$id}`)                                // Se redirige al nuevo workspace
+    //   }
+    // }
+  )}
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
