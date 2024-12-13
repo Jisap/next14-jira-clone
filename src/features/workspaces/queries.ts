@@ -69,6 +69,7 @@ interface GetWorkspaceProps {
   workspaceId: string;
 }
 
+// No se usa despues de la refactorización
 export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => { // Función para obtener un workspace 
 
     // const client = new Client()                                             // Se crea una instancia de Client de Appwrite, 
@@ -111,6 +112,7 @@ interface GetWorkspaceInfoProps {
   workspaceId: string;
 }
 
+// No se usa despues de la refactorización
 export const getWorkspaceInfo = async ({ workspaceId }: GetWorkspaceInfoProps) => { // Función para obtener un workspace 
 
     const { databases } = await createSessionClient();                // Se crean instancias de cliente de appWrite
