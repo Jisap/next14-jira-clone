@@ -9,33 +9,36 @@ import { useProjectId } from '@/features/projects/hook/use-project-id';
 import { useGetProject } from '@/features/projects/api/use-get-project';
 import { PageLoader } from '../../../../../../components/page-loader';
 import { PageError } from '@/components/page-error';
+import { useGetProjectAnalytics } from '@/features/projects/api/use-get-project-analytics';
+import { Analytics } from '@/components/analytics';
 
 export const ProjectIdClient = () => {
 
   const projectId = useProjectId();
-  const { data, isLoading } = useGetProject({ projectId });
+  const { data: project, isLoading: isLoadingProject } = useGetProject({ projectId });
+  const { data: analytics, isLoading: isLoadingAnalytics } = useGetProjectAnalytics({ projectId });
+
+  const isLoading = isLoadingProject || isLoadingAnalytics;
 
   if(isLoading) {
     return <PageLoader />
   }
 
-  if(!data) {
+  if(!project) {
     return <PageError message="Project not found" />
   }
-
-
 
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-2">
           <ProjectAvatar
-            image={data.imageUrl}
-            name={data.name}
+            image={project.imageUrl}
+            name={project.name}
             className="size-8"
           />
           <p className="text-lg font-bold">
-            {data.name}
+            {project.name}
           </p>
         </div>
 
@@ -45,7 +48,7 @@ export const ProjectIdClient = () => {
             size="sm"
             asChild
           >
-            <Link href={`/workspaces/${data?.workspaceId}/projects/${data.$id}/settings`}>
+            <Link href={`/workspaces/${project?.workspaceId}/projects/${project.$id}/settings`}>
               <PencilIcon className="size-4 mr-2" />
               Edit Project
             </Link>
@@ -53,6 +56,10 @@ export const ProjectIdClient = () => {
         </div>
       </div>
 
+      {analytics ? (
+        <Analytics data={analytics} />
+      ) : null}
+      
       <TasksViewSwitcher hideProjectFilter />
 
     </div>
