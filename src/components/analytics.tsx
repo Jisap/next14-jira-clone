@@ -1,5 +1,5 @@
 import { ProjectAnalyticsResponseType } from '@/features/projects/api/use-get-project-analytics';
-import { ScrollArea } from './ui/scroll-area';
+import { ScrollArea, ScrollBar } from './ui/scroll-area';
 import { AnalyticsCard } from './analytics-card';
 import DottedSeparator from './dotted-separator';
 
@@ -57,6 +57,7 @@ export const Analytics = ({ data }: ProjectAnalyticsResponseType) => {
           />
         </div>
       </div>
+      <ScrollBar orientation="horizontal"/>
     </ScrollArea>
   )
 }
