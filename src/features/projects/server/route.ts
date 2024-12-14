@@ -279,7 +279,7 @@ const app = new Hono()
         TASKS_ID,
         [
           Query.equal("projectId", projectId),                                    // para el proyecto especificado
-          Query.equal("assigneeId", member.$id),                                    // que tengan un usuario asignado igual al usuario logueado (member del workspace)
+          Query.equal("assigneeId", member.$id),                                  // que tengan un usuario asignado igual al usuario logueado (member del workspace)
           Query.greaterThanEqual("$createdAt", thisMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes actual
           Query.lessThanEqual("$createdAt", thisMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes actual
         ],
@@ -290,7 +290,7 @@ const app = new Hono()
         TASKS_ID,
         [
           Query.equal("projectId", projectId),                                    // para el proyecto especificado
-          Query.equal("assigneeId", member.$id),                                    // que tengan un usuario asignado igual al usuario logueado (member del workspace)
+          Query.equal("assigneeId", member.$id),                                  // que tengan un usuario asignado igual al usuario logueado (member del workspace)
           Query.greaterThanEqual("$createdAt", lastMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes passado
           Query.lessThanEqual("$createdAt", lastMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes pasado
         ],
