@@ -4,7 +4,6 @@ import DottedSeparator from "./dotted-separator";
 import Link from "next/link";
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id";
 import { Card, CardContent } from "./ui/card";
-import { formatDistanceToNow } from "date-fns";
 import { Project } from "@/features/projects/types";
 import { useCreateProjectModal } from "@/features/projects/hook/use-create-project-modal";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
@@ -61,7 +60,7 @@ export const ProjectList = ({ data, total }: ProjecListProps) => {
            Entonces, gracias a first-of-type:block, este elemento se muestra. 
           */}
           <li className="text-sm text-muted-foreground text-center hidden first-of-type:block">
-            No tasks found
+            No projects found
           </li>
         </ul>
       </div>

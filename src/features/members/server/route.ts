@@ -6,7 +6,7 @@ import { z } from "zod";
 import { getMember } from "../utils";
 import { DATABASE_ID, MEMBERS_ID } from "@/config";
 import { Query } from "node-appwrite";
-import { MemberRole } from "../type";
+import { Member, MemberRole } from "../type";
 
 
 
@@ -31,7 +31,7 @@ const app = new Hono()
         return c.json({error: "Unauthorized"}, 401)
       }
 
-      const members = await databases.listDocuments(        // Si el user que hace la petición es member se obtienen los miembros del workspace
+      const members = await databases.listDocuments<Member>( // Si el user que hace la petición es member se obtienen los miembros del workspace
         DATABASE_ID,
         MEMBERS_ID,
         [Query.equal("workspaceId", workspaceId)],          

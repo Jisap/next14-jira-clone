@@ -12,6 +12,9 @@ import { PageError } from "@/components/page-error";
 import { Analytics } from "@/components/analytics";
 import { TaskList } from "@/components/TaskList";
 import { ProjectList } from "@/components/ProjectList";
+import { MemberList } from "@/components/MemberList";
+
+
 
 
 
@@ -49,6 +52,10 @@ export const WorkspaceIdClient = () => {
         <ProjectList 
           data={projects.documents} 
           total={projects.total}
+        />
+        <MemberList
+          data={members.documents} 
+          total={members.total}
         />
       </div>
     </div>
