@@ -11,6 +11,8 @@ import { PageLoader } from "@/components/page-loader";
 import { PageError } from "@/components/page-error";
 import { Analytics } from "@/components/analytics";
 import { TaskList } from "@/components/TaskList";
+import { ProjectList } from "@/components/ProjectList";
+
 
 
 
@@ -22,8 +24,6 @@ export const WorkspaceIdClient = () => {
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({ workspaceId });
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects({ workspaceId });
   const { data: members, isLoading: isLoadingMembers } = useGetMembers({ workspaceId });
-
-  const { open: createProject } = useCreateProjectModal();
   
 
   const isLoading = isLoadingAnalytics || isLoadingTasks || isLoadingProjects || isLoadingMembers;
@@ -45,6 +45,10 @@ export const WorkspaceIdClient = () => {
         <TaskList 
           data={tasks.documents} 
           total={tasks.total}  
+        />
+        <ProjectList 
+          data={projects.documents} 
+          total={projects.total}
         />
       </div>
     </div>

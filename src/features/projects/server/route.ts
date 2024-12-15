@@ -89,7 +89,7 @@ const app = new Hono()
         return c.json({error: "Unauthorized"}, 401)
       }
 
-      const projects = await databases.listDocuments(       // Si el usuario logueado es un miembro del workspace, devuelve todos los proyectos del workspace
+      const projects = await databases.listDocuments<Project>( // Si el usuario logueado es un miembro del workspace, devuelve todos los proyectos del workspace
         DATABASE_ID,
         PROJECTS_ID,
         [
