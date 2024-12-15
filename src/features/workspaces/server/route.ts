@@ -2,13 +2,15 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { sessionMiddleware } from "@/lib/session-middleware";
 import { createWorkspaceSchema, updateWorkspaceSchema } from "../schemas";
-import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACE_ID } from "@/config";
+import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, TASKS_ID, WORKSPACE_ID } from "@/config";
 import { ID, Query } from 'node-appwrite';
 import { MemberRole } from "@/features/members/type";
 import { generateInviteCode } from "@/lib/utils";
 import { getMember } from "@/features/members/utils";
 import { Workspace } from '../types';
 import { z } from "zod";
+import { endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { TaskStatus } from "@/features/tasks/types";
 
 
 
@@ -291,6 +293,171 @@ const app = new Hono()
                   
     }
   )
+  .get(
+      "/:workspaceId/analytics",
+      sessionMiddleware,
+      async (c) => {
+        const databases = c.get("databases")
+        const user = c.get("user")
+        const { workspaceId } = c.req.param()
+  
+        const member = await getMember({
+          databases,
+          workspaceId,
+          userId: user.$id,
+        });
+  
+        if (!member) {
+          return c.json({ error: "Unauthorized" }, 401);
+        }
+  
+        const now = new Date();                                    // Obtenemos la fecha actual
+        const thisMonthStart = startOfMonth(now);                  // Obtenemos la fecha del comienzo del mes actual
+        const thisMonthEnd = endOfMonth(now);                      // Obtenemos la fecha del final del mes actual
+        const lastMonthStart = startOfMonth(subMonths(now, 1));    // Obtenemos la fecha del comienzo del mes anterior
+        const lastMonthEnd = endOfMonth(subMonths(now, 1));        // Obtenemos la fecha del final del mes anterior
+      
+        const thisMonthTasks = await databases.listDocuments(                       // Obtenemos las tareas del mes actual
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.greaterThanEqual("$createdAt", thisMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes actual
+            Query.lessThanEqual("$createdAt", thisMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes actual
+          ],
+        );
+  
+        const lastMonthTasks = await databases.listDocuments(                       // Obtenemos las tareas del mes anterior
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.greaterThanEqual("$createdAt", lastMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes anterior
+            Query.lessThanEqual("$createdAt", lastMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes anterior
+          ],
+        );
+  
+        const taskCount = thisMonthTasks.total;                                     // Número de tareas del mes actual
+        const taskDifference = taskCount - lastMonthTasks.total;                    // Diferencia de tareas entre el mes actual y el anterior
+      
+        const thisMonthAssignedTasks = await databases.listDocuments(               // Obtenemos las tareas assignadas del mes actual
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el proyecto especificado
+            Query.equal("assigneeId", member.$id),                                  // que tengan un usuario asignado igual al usuario logueado (member del workspace)
+            Query.greaterThanEqual("$createdAt", thisMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes actual
+            Query.lessThanEqual("$createdAt", thisMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes actual
+          ],
+        );
+  
+        const lastMonthAssignedTasks = await databases.listDocuments(               // Obtenemos las tareas assignadas del mes pasado
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.equal("assigneeId", member.$id),                                  // que tengan un usuario asignado igual al usuario logueado (member del workspace)
+            Query.greaterThanEqual("$createdAt", lastMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes passado
+            Query.lessThanEqual("$createdAt", lastMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes pasado
+          ],
+        );
+  
+        const assignedTaskCount = thisMonthAssignedTasks.total;                     // Número de tareas asignadas del mes actual
+        const assignedTaskDifference = assignedTaskCount - lastMonthAssignedTasks.total;  // Diferencia de tareas asignadas entre el mes actual y el anterior
+  
+        const thisMonthIncompleteTasks = await databases.listDocuments(             // Obtenemos las tareas incompletas del mes actual
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.notEqual("status", TaskStatus.DONE),                              // que tengan un estado diferente a "DONE"
+            Query.greaterThanEqual("$createdAt", thisMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes actual
+            Query.lessThanEqual("$createdAt", thisMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes actual
+          ],
+        );
+  
+        const lastMonthIncompleteTasks = await databases.listDocuments(             // Obtenemos las tareas incompletas del mes pasado
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.notEqual("status", TaskStatus.DONE),                              // que tengan un estado diferente a "DONE"
+            Query.greaterThanEqual("$createdAt", lastMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes passado
+            Query.lessThanEqual("$createdAt", lastMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes pasado
+          ],
+        );
+  
+        const incompleteTaskCount = thisMonthIncompleteTasks.total;                 // Número de tareas incompletas del mes actual
+        const incompleteTaskDifference = incompleteTaskCount - lastMonthIncompleteTasks.total;  // Diferencia de tareas incompletas entre el mes actual y el anterior
+      
+        const thisMonthCompletedTasks = await databases.listDocuments(              // Obtenemos las tareas incompletas del mes actual
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.equal("status", TaskStatus.DONE),                                 // que tengan un estado igual a "DONE"
+            Query.greaterThanEqual("$createdAt", thisMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes actual
+            Query.lessThanEqual("$createdAt", thisMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes actual
+          ],
+        );
+  
+        const lastMonthCompletedTasks = await databases.listDocuments(              // Obtenemos las tareas completas del mes pasado
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.equal("status", TaskStatus.DONE),                                 // que tengan un estado igual a "DONE"
+            Query.greaterThanEqual("$createdAt", lastMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes passado
+            Query.lessThanEqual("$createdAt", lastMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes pasado
+          ],
+        );
+  
+        const completedTaskCount = thisMonthCompletedTasks.total;                   // Número de tareas completas del mes actual
+        const completedTaskDifference = completedTaskCount - lastMonthCompletedTasks.total;  // Diferencia de tareas completas entre el mes actual y el anterior
+  
+        const thisMonthOverdueTasks = await databases.listDocuments(                // Obtenemos las tareas no vencidas del mes actual
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.notEqual("status", TaskStatus.DONE),                              // que tengan un estado diferente a "DONE"
+            Query.lessThan("dueDate", now.toISOString()),                           // que tengan una fecha de vencimiento menor o igual a la fecha actual
+            Query.greaterThanEqual("$createdAt", thisMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes actual
+            Query.lessThanEqual("$createdAt", thisMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes actual
+          ],
+        );
+  
+        const lastMonthOverdueTasks = await databases.listDocuments(                // Obtenemos las tareas no vencidas del mes pasado
+          DATABASE_ID,
+          TASKS_ID,
+          [
+            Query.equal("workspaceId", workspaceId),                                // para el workspace especificado
+            Query.notEqual("status", TaskStatus.DONE),                              // que tengan un estado diferente a "DONE"
+            Query.lessThan("dueDate", now.toISOString()),                           // que tengan una fecha de vencimiento menor o igual a la fecha actual
+            Query.greaterThanEqual("$createdAt", lastMonthStart.toISOString()),     // que tengan una fecha de creación mayor o igual a la fecha del comienzo del mes passado
+            Query.lessThanEqual("$createdAt", lastMonthEnd.toISOString()),          // y que tengan una fecha de creación menor o igual a la fecha del final del mes pasado
+          ],
+        );
+  
+        const overdueTaskCount = thisMonthOverdueTasks.total;                       // Número de tareas no vencidas del mes actual
+        const overdueTaskDifference = overdueTaskCount - lastMonthOverdueTasks.total;  // Diferencia de tareas no vencidas entre el mes actual y el anterior
+        
+        return c.json({
+          data: {
+            taskCount,
+            taskDifference,
+            assignedTaskCount,
+            assignedTaskDifference,
+            incompleteTaskCount,
+            incompleteTaskDifference,
+            completedTaskCount,
+            completedTaskDifference,
+            overdueTaskCount,
+            overdueTaskDifference,
+          }
+        })
+      }
+    )
 
 
 export default app;

@@ -298,8 +298,7 @@ const app = new Hono()
 
       const assignedTaskCount = thisMonthAssignedTasks.total;                     // Número de tareas asignadas del mes actual
       const assignedTaskDifference = assignedTaskCount - lastMonthAssignedTasks.total;  // Diferencia de tareas asignadas entre el mes actual y el anterior
-console.log("assignedTaskCount",assignedTaskCount);
-console.log("assignedTaskDifference", assignedTaskDifference);   
+  
       const thisMonthIncompleteTasks = await databases.listDocuments(             // Obtenemos las tareas incompletas del mes actual
         DATABASE_ID,
         TASKS_ID,
@@ -393,5 +392,6 @@ console.log("assignedTaskDifference", assignedTaskDifference);
       })
     }
   )
+  
 
 export default app

@@ -18,7 +18,7 @@ export const useGetProjectAnalytics = ({ projectId }: UseGetProjectAnalyticsProp
       })
 
       if (!response.ok) {           
-        throw new Error("Failed to fetch project analytics");
+        throw new Error("Failed to fetch projecta analytics");
       }
 
       const { data } = await response.json()
