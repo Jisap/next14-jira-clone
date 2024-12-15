@@ -10,7 +10,8 @@ import { useCreateProjectModal } from "@/features/projects/hook/use-create-proje
 import { PageLoader } from "@/components/page-loader";
 import { PageError } from "@/components/page-error";
 import { Analytics } from "@/components/analytics";
-import { TaskList } from "@/components/taskList";
+import { TaskList } from "@/components/TaskList";
+
 
 
 
