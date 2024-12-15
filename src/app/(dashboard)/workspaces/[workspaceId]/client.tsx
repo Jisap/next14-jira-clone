@@ -6,12 +6,12 @@ import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { useGetTasks } from "@/features/tasks/api/use-get-tasks";
 import { useGetWorkspaceAnalytics } from "@/features/workspaces/api/use-get-workspace-analytics";
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id";
-import tasks from '@/features/tasks/server/route';
 import { useCreateProjectModal } from "@/features/projects/hook/use-create-project-modal";
-import { useCreateTaskModal } from "@/features/tasks/hooks/use-create-taks-modal";
 import { PageLoader } from "@/components/page-loader";
 import { PageError } from "@/components/page-error";
 import { Analytics } from "@/components/analytics";
+import { TaskList } from "@/components/taskList";
+
 
 
 export const WorkspaceIdClient = () => {
@@ -23,7 +23,7 @@ export const WorkspaceIdClient = () => {
   const { data: members, isLoading: isLoadingMembers } = useGetMembers({ workspaceId });
 
   const { open: createProject } = useCreateProjectModal();
-  const { open: createTask } = useCreateTaskModal();
+  
 
   const isLoading = isLoadingAnalytics || isLoadingTasks || isLoadingProjects || isLoadingMembers;
 
@@ -40,6 +40,13 @@ export const WorkspaceIdClient = () => {
       <Analytics 
         data={analytics}
       />
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <TaskList 
+          data={tasks.documents} 
+          total={tasks.total}  
+        />
+      </div>
     </div>
   )
 }
+
