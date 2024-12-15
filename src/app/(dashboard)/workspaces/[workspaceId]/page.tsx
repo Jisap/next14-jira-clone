@@ -3,6 +3,7 @@
 import React from 'react'
 import { getCurrent } from '@/features/auth/queries';
 import { redirect } from 'next/navigation';
+import { WorkspaceIdClient } from './client';
 
 const WorkspaceIdPage = async() => {
 
@@ -11,9 +12,7 @@ const WorkspaceIdPage = async() => {
 
 
   return (
-    <div>
-      WorkspaceIdPage
-    </div>
+    <WorkspaceIdClient />
   )
 }
 
