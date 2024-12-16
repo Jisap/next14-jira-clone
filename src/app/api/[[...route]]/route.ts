@@ -7,7 +7,8 @@ import projects from "@/features/projects/server/route";
 import tasks from "@/features/tasks/server/route";
 
 const app = new Hono().basePath('/api') // Hono maneja las rutas de la aplicación basado la ruta del /features/server
-  
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routes = app 
   .route("/auth", auth)
   .route("/workspaces", workspaces)
