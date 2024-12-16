@@ -6,18 +6,13 @@ import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { useGetTasks } from "@/features/tasks/api/use-get-tasks";
 import { useGetWorkspaceAnalytics } from "@/features/workspaces/api/use-get-workspace-analytics";
 import { useWorkspaceId } from "@/features/workspaces/hook/use-workspace-id";
-import { useCreateProjectModal } from "@/features/projects/hook/use-create-project-modal";
+
 import { PageLoader } from "@/components/page-loader";
 import { PageError } from "@/components/page-error";
 import { Analytics } from "@/components/analytics";
 import { TaskList } from "@/components/TaskList";
 import { ProjectList } from "@/components/ProjectList";
 import { MemberList } from "@/components/MemberList";
-
-
-
-
-
 
 
 export const WorkspaceIdClient = () => {

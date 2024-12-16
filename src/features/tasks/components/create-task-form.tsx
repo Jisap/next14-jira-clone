@@ -31,7 +31,6 @@ interface CreateTaskFormProps {
 export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: CreateTaskFormProps) => { // Formulario para crear una nueva tarea con react-hook-form
 
   const workspaceId = useWorkspaceId();
-  const router = useRouter();
   const { mutate, isPending } = useCreateTask();
 
   const form = useForm<z.infer<typeof createTaskSchema>>({                    // Definición del form con react-hook-form
@@ -43,7 +42,7 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
 
   const onSubmmit = (values: z.infer<typeof createTaskSchema>) => {           // El submit recibe los values del form y se valida con el esquema  
     mutate({ json: { ...values, workspaceId } }, {                            // Se envia el objeto a la mutation
-      onSuccess: ({ data }) => {                                              // Si se obtuvo la data de la mutation
+      onSuccess: () => {                                                      // Si se obtuvo la data de la mutation
         form.reset();
         onCancel?.()
       }

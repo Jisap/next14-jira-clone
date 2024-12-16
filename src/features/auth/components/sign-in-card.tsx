@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -26,9 +24,6 @@ import {
 import Link from "next/link"
 import { loginSchema } from "../schemas"
 import { useLogin } from "../api/use-login"
-
-
-
 
 
 

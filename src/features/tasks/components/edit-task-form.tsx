@@ -32,8 +32,6 @@ interface EditTaskFormProps {
 
 export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialValues }: EditTaskFormProps) => { // Formulario para actualizar una tarea con react-hook-form
 
-  const workspaceId = useWorkspaceId();
-  const router = useRouter();
   const { mutate, isPending } = useUpdateTask();
 
   const form = useForm<z.infer<typeof createTaskSchema>>({                                                       // Definición del form con react-hook-form
@@ -46,7 +44,7 @@ export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialV
 
   const onSubmmit = (values: z.infer<typeof createTaskSchema>) => {           // El submit recibe los values del form y se valida con el esquema  
     mutate({ json: values, param: { taskId: initialValues.$id } }, {          // Se envía el objeto a la mutation
-      onSuccess: ({ data }) => {                                              // Si se obtuvo la data de la mutation
+      onSuccess: () => {                                                      // Si se obtuvo la data de la mutation
         form.reset();
         onCancel?.()
       }

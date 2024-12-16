@@ -1,6 +1,6 @@
 
 
-import { useQueryState, parseAsBoolean, parseAsString } from "nuqs";
+import { useQueryState, parseAsString } from "nuqs";
 
 export const useEditTaskModal = () => { // Estado que modifica el estado de taskId y maneja el parámetro de la URL.
   const [ taskId, setTaskid ] = useQueryState( 

@@ -28,7 +28,7 @@ const app = new Hono()
         dueDate: z.string().nullish(),
       })
     ),
-    async (c, next) => {
+    async (c) => {
       const { users } = await createAdminClient();                         // Users registrados en appWrite
       const databases = c.get("databases");                                // Base de datos de appWrite
       const user = c.get("user");                                          // Usuario autenticado
@@ -147,7 +147,7 @@ const app = new Hono()
     "/",
     sessionMiddleware,                                                                                               // Verificar si el usuario está autenticado
     zValidator("json", createTaskSchema),                                                                            // Validar el body de la petición según el esquema
-    async (c, next) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
+    async (c) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
     
       const user = c.get("user");
       const databases = c.get("databases");
@@ -200,7 +200,7 @@ const app = new Hono()
   .delete(
   "/:taskId",                                                                                                      // Ruta de la petición con el parámetro taskId
   sessionMiddleware,                                                                                               // Verificamos si el usuario está autenticado
-  async (c, next) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
+  async (c) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
     
     const user = c.get("user");                                                                                    // Obtenemos el usuario autenticado
     const databases = c.get("databases");                                                                          // Base de datos de appWrite
@@ -235,7 +235,7 @@ const app = new Hono()
     "/:taskId",
     sessionMiddleware,                                                                                               // Verificar si el usuario está autenticado
     zValidator("json", createTaskSchema.partial()),                                                                  // Validar el body de la petición según el esquema
-    async (c, next) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
+    async (c) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
 
       const user = c.get("user");
       const databases = c.get("databases");
@@ -278,7 +278,7 @@ const app = new Hono()
   .get(
     "/:taskId",                                                                                                      // Ruta de la petición con el parámetro taskId
     sessionMiddleware,                                                                                               // Verificamos si el usuario está autenticado
-    async (c, next) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
+    async (c) => {                                                                                             // Establecido el contexto obtenemos lo siguiente:
       const currentUser = c.get("user");                                                                             // Obtenemos el usuario autenticado
       const databases = c.get("databases");                                                                          // Base de datos de appWrite
       const { taskId } = c.req.param();                                                                              // Parámetros de la consulta taskId
