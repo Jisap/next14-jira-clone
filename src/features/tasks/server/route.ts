@@ -365,7 +365,7 @@ const app = new Hono()
         .next().value;  // Obtiene el primer (y único) valor del iterador.                                                     
     
       if(!workspaceId){
-        return c.json({error: "Workspace Id is required"})
+        return c.json({error: "Workspace Id is required"}, 400)
       }
 
       const member = await getMember({                                                                              // Se obtiene el miembro del workspace que se está actualizando.
