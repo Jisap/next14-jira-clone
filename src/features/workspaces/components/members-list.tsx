@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MemberRole } from "@/features/members/type";
 import { useConfirm } from "@/hooks/use-confirm";
-import { toast } from "sonner";
+
 
 
 
@@ -84,7 +84,7 @@ export const MembersList = () => {
       </div>
       <CardContent className="p-7">
         {data?.documents.map((member, index) => (
-          <Fragment>
+          <Fragment key={index}>
             <div className="flex items-center gap-2">
               <MemberAvatar  
                 name={member.name} 

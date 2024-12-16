@@ -151,7 +151,7 @@ const app = new Hono()
     
       const user = c.get("user");
       const databases = c.get("databases");
-      const { name, status, workspaceId, projectId, dueDate, assigneeId, description } = c.req.valid("json")
+      const { name, status, workspaceId, projectId, dueDate, assigneeId } = c.req.valid("json")
   
       const member = await getMember({                                                                               // Obtenemos el usuario asociado al workspace
         databases,
@@ -344,7 +344,7 @@ const app = new Hono()
         )
       })   
     ),
-    async (c, next) => {
+    async (c) => {
       const databases = c.get("databases");                                                                         // Base de datos de appWrite
       const user = c.get("user");                                                                                   // Usuario autenticado
       const { tasks } = await c.req.valid("json");                                                                  // Parámetros de la consulta validados con Zod
