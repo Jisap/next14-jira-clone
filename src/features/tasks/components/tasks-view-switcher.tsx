@@ -18,6 +18,7 @@ import { TaskStatus } from '../types';
 import { useCallback } from "react"
 import { useBulkUpdateTasks } from "../api/use-bulk-update-tasks"
 import { DataCalendar } from "./data-calendar"
+import { useProjectId } from "@/features/projects/hook/use-project-id"
 
 interface TasksViewSwitcherProps {
   hideProjectFilter?: boolean;
@@ -39,6 +40,7 @@ export const TasksViewSwitcher = ({ hideProjectFilter }: TasksViewSwitcherProps)
   })
 
   const workspaceId = useWorkspaceId()
+  const paramProjectId = useProjectId()
   const { open } = useCreateTaskModal(); // open establece isOpen a true
 
   const { mutate: bulkUpdate } = useBulkUpdateTasks();
@@ -48,7 +50,7 @@ export const TasksViewSwitcher = ({ hideProjectFilter }: TasksViewSwitcherProps)
      isLoading: isLoadingTasks 
   } = useGetTasks({                  // Se obtienen las tareas según status
     workspaceId,
-    projectId,
+    projectId: paramProjectId || projectId,
     assigneeId,
     status,
     dueDate,
