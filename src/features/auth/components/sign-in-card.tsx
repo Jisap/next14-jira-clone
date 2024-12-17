@@ -116,7 +116,7 @@ export const SignInCard = () => {
           Login with Google
         </Button>
         <Button
-          onClick={signUpWithGithub}
+          onClick={() => signUpWithGithub()}
           disabled={isPending}
           variant="secondary"
           size="lg"
