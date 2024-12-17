@@ -28,5 +28,5 @@ export async function GET(request: NextRequest) {                  // Handler pa
       }
   );
 
-  return NextResponse.redirect(`${request.nextUrl.origin}/`);
+  return NextResponse.redirect(`${request.nextUrl.origin}/`);      // Redirige al usuario a la raíz del sitio web (/).
 }
