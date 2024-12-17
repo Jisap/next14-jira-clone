@@ -112,7 +112,7 @@ const app = new Hono()
           const user = await users.get(member.userId)
           return {                                                          // y se devuelve como assignees los miembros con los datos relativos a sus usuarios
             ...member,
-            name: user.name,
+            name: user.name || user.email,
             email: user.email
           }
         })
@@ -316,7 +316,7 @@ const app = new Hono()
 
       const assignee = {                                                                                             // Obtenemos el assignne en base al miembro asignado a la tarea con los detalles de su usuario
         ...member,
-        name: user.name,
+        name: user.name || user.email,
         email: user.email
       }
 

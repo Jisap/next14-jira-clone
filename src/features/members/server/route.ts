@@ -42,7 +42,7 @@ const app = new Hono()
           const user = await users.get(member.userId)       
           return {
             ...member,                                      // Se retorna el member con su user
-            name: user.name,
+            name: user.name || user.email,                  
             email: user.email,
           }                          
         })
