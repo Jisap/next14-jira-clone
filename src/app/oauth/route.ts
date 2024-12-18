@@ -28,5 +28,6 @@ export async function GET(request: NextRequest) {                  // Handler pa
       }
   );
 
-  return NextResponse.redirect(`${request.nextUrl.origin}/`);      // Redirige al usuario a la raíz del sitio web (/).
+  //return NextResponse.redirect(`${request.nextUrl.origin}/`);      // Redirige al usuario a la raíz del sitio web (/).
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP}/`);   // Redirige al usuario a la raíz del sitio web (/).
 }

@@ -10,12 +10,12 @@ export async function signUpWithGithub() { // Action del lado del servidor en un
   
   const { account } = await createAdminClient();         // Se invoca createAdminClient para obtener una instancia del cliente de Appwrite.
 
-  const origin = headers().get("origin");                // obtiene el encabezado Origin de la solicitud HTTP (la URL base)
+  //const origin = headers().get("origin");                // obtiene el encabezado Origin de la solicitud HTTP (la URL base)
 
   const redirectUrl = await account.createOAuth2Token(   // createOAuth2Token es un método proporcionado por Appwrite que inicia el flujo de autenticación con OAuth2.
     OAuthProvider.Github,                                // El proveedor de autenticación es GitHub. (Cuadro de dialogo de GitHub)
-    `${origin}/oauth`,                                   // URL de redirección en caso de éxito
-    `${origin}/sign-up`,                                 // URL de redirección en caso de fallo o cancelación. 
+    `${process.env.NEXT_PUBLIC_APP}/oauth`,              // URL de redirección en caso de éxito
+    `${process.env.NEXT_PUBLIC_APP}/sign-up`,            // URL de redirección en caso de fallo o cancelación. 
   );
 
   return redirect(redirectUrl);                          // Redirecciona al usuario a la URL de redirección proporcionada por Appwrite -> allí se creará una sesión autenticada utilizando Appwrite y se configurará una cookie de autenticación segura. -> redirect a "/"
