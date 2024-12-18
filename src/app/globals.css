@@ -85,3 +85,7 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.rdp-root {
+  --rdp-weekday-text-align: flex w-full justify-between;
+}

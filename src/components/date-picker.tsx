@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { Calendar } from "./ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
-
+//import "react-day-picker/dist/style.css";
 
 interface DatePickerProps {
   value: Date | undefined;
@@ -43,7 +43,7 @@ export const DatePicker = ({
           mode="single"
           selected={value}
           onSelect={(date) => onChange(date as Date)}
-          initialFocus
+          autoFocus
         />
       </PopoverContent>
     </Popover>
