@@ -29,6 +29,8 @@ export const useDeleteTask = () => {                 // Hook para manejar una mu
     onSuccess: ({ data }) => {
       toast.success("Task deleted successfully");
       //router.refresh()
+      queryClient.invalidateQueries({ queryKey: ["project-analytics"] });
+      queryClient.invalidateQueries({ queryKey: ["workspace-analytics"] });
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["tasks", data.$id] });
     },

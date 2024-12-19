@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {                  // Handler pa
   const secret = request.nextUrl.searchParams.get("secret");
 
   if(!userId || !secret) {
-    return new NextResponse("Missing fields", { status: 400 });
+    return new NextResponse("Missing fields", { status: 400 });    // Si falta alguno de los campos, devuelve un error 400.
   }
 
   const { account } = await createAdminClient();                   // Crea una instancia del cliente de Appwrite.
